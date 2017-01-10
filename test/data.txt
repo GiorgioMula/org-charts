@@ -1,0 +1,7 @@
+# File format:
+# Name, Role, Parent, Image File Name
+
+Paperone, Manager, , Paperone.jpg
+Pippo, Architect, Paperone, Pippo.jpg
+Pluto, Architect, Paperone, Pluto.jpg
+Paperino, Mezza Sega, Pluto, Paperino.jpg
