@@ -67,6 +67,10 @@ function createHTMLPersonInGroup(person, group)
 	var newNode = document.createElement("div");
 	newNode.setAttribute("class", "person");
 	newNode.setAttribute("id", person.name);
+	if (person.role == "Secretary")
+	{
+		//newNode.setAttribute("class", "secretary");
+	}
 	var newContent = '<img src="../test/' + person.img + '" alt="' + person.name
 			+ '" />';
 	newContent += '<p><strong>' + person.name + '</strong><br/>';
@@ -80,9 +84,9 @@ function createHTMLGroupInLevel(manager, level)
 	var newNode = document.createElement("div");
 	newNode.setAttribute("class", "group");
 	newNode.setAttribute("owner", manager == null ? "CEO" : manager.name);
-	var newContent = '<svg></svg>'; // TODO: connecting lines, after all person
+	//var newContent = '<svg></svg>'; // TODO: connecting lines, after all person
 	// added
-	newNode.innerHTML = newContent;
+	//newNode.innerHTML = newContent;
 	level.appendChild(newNode);
 	return newNode;
 }
@@ -117,7 +121,6 @@ function writeBranch(employee, levelIdx)
 	{
 		level = createNewLevel();
 	}
-	// var group = createHTMLGroupInLevel(employee.manager, level);
 	var group = null;
 	var groups = level.getElementsByTagName("div");
 	for (var groupIndex = 0; groupIndex < groups.length; groupIndex++)
@@ -136,7 +139,9 @@ function writeBranch(employee, levelIdx)
 	createHTMLPersonInGroup(employee, group);
 	for (var idxChild = 0; idxChild < employee.childArray.length; idxChild++)
 	{
-		writeBranch(employee.childArray[idxChild], levelIdx + 1);
+		var dependent = employee.childArray[idxChild];
+		var nextLevel = (dependent.role == "Secretary")? levelIdx: levelIdx + 1;
+		writeBranch(dependent, nextLevel);
 	}
 }
 
@@ -167,22 +172,17 @@ function parseCsvLine(textLine, index)
 	{
 		return;
 	}
-	var strArray = textLine.split(",", 4);
-	if (strArray.length != 4)
+	var strArray = textLine.split(",", 3);
+	if (strArray.length != 3)
 	{
 		alert("File bad format on line " + index);
 		return;
 	}
 
-	var employee = new Person(strArray[0].trim(), strArray[3].trim(), strArray[1]
+	var employee = new Person(strArray[0].trim(), strArray[0].trim() + ".jpg", strArray[1]
 			.trim());// , strArray[2].trim());
 	personMap.addPerson(employee, strArray[2].trim());
 	writeDebug("personMap now is " + personMap);
-
-	/*
-	 * if (employee.role.search("Manager") != -1) { chartArray[0].push(employee); }
-	 * else { chartArray[1].push(employee); }
-	 */
 }
 
 function writeDebug(text, clear)
