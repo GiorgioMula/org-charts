@@ -7,7 +7,7 @@ body
 input
 {
 	min-width: 50%;
-	align: center;
+	text-align: center;
 }
 
 .header
@@ -49,27 +49,25 @@ input
 	text-align: center;
 }
 
-.person
-{
+/* PERSON */
+
+div.person
+{	
+	position: relative;
 	display: inline-block;
+	height: 200px;	
 	width: 160px;
+	margin: 10px 5px; /* top and bottom 9 px */
 }
 
-#org-chart img
+.person img
 {
 	height: 140px;
 /*	clip: rect(0px, 140px, 140px, 0px);*/	
 	border-radius: 50%;
 }
 
-div.person
-{
-	position: relative;
-	height: 200px;	
-	margin: 10px 5px; /* top and bottom 10 px */
-}
-
-#org-chart div p
+div.person p
 {
 	border: 2px solid black;
 	border-radius: 10%;
@@ -83,13 +81,62 @@ div.person
 	width: 80%;
 }
 
+/* SMALL FORMAT PERSONS */
+div[format=small].person
+{
+	display: block;
+	width: 200px;
+	height: 80px;
+}
+
+div[format=small].person img
+{
+	height: 80px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+div[format=small].person p
+{
+	top: 20px;
+	left: 75px;
+	width: 120px;
+	heigth: 60%;
+	margin: 0px;
+}
+
+div.person:hover
+{
+	margin: 6px 1px; /* top and bottom 6 px */
+	border: 4px red solid;
+	border-radius: 5%;
+}
+
+
+/*
+#org-chart div p
+{
+	border: 2px solid black;
+	border-radius: 10%;
+	box-shadow: 5px 5px 10px gray;
+	color: white;
+	font-size: 16pt;	
+	background-color: teal;
+	position: absolute;
+	top: 100px;
+	left: 15px;
+	width: 80%;
+}
+*/
 div.group
 {
-	display: inline-block;
 	border: 1px dashed black;
+	box-shadow: 5px 5px 10px gray;
 	border-radius: 5px;
 	background-color: rgba(240,240,110, 0.5);
-	margin: 0px, 10px;
+	margin: 10px 10px;
+	vertical-align: top;
 }
 
 div.level

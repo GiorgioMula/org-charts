@@ -50,8 +50,6 @@ function PersonMap()
 
 var personMap = new PersonMap();
 var levelNodesArray = new Array();
-var levelIndex = 0;
-var rootElement;
 
 /**
  * Attach a new DOM element to parent. The DOM element is a "div" represent the
@@ -62,15 +60,16 @@ var rootElement;
  * @param group
  *          the DOM parent node
  */
-function createHTMLPersonInGroup(person, group)
+function createHTMLPersonInGroup(person, group, useSmallFormat)
 {
 	var newNode = document.createElement("div");
 	newNode.setAttribute("class", "person");
-	newNode.setAttribute("id", person.name);
-	if (person.role == "Secretary")
+	if (useSmallFormat)
 	{
-		//newNode.setAttribute("class", "secretary");
+		newNode.setAttribute("format", "small");
 	}
+	newNode.setAttribute("id", person.name);
+	newNode.setAttribute("role", person.role);
 	var newContent = '<img src="../test/' + person.img + '" alt="' + person.name
 			+ '" />';
 	newContent += '<p><strong>' + person.name + '</strong><br/>';
@@ -83,10 +82,12 @@ function createHTMLGroupInLevel(manager, level)
 {
 	var newNode = document.createElement("div");
 	newNode.setAttribute("class", "group");
+	newNode.style.display = "inline-block";
+
 	newNode.setAttribute("owner", manager == null ? "CEO" : manager.name);
-	//var newContent = '<svg></svg>'; // TODO: connecting lines, after all person
+	// var newContent = '<svg></svg>'; // TODO: connecting lines, after all person
 	// added
-	//newNode.innerHTML = newContent;
+	// newNode.innerHTML = newContent;
 	level.appendChild(newNode);
 	return newNode;
 }
@@ -100,7 +101,7 @@ function createNewLevel()
 {
 	var newLevel = document.createElement("div");
 	newLevel.setAttribute("class", "level");
-	rootElement.appendChild(newLevel);
+	document.getElementById("org-chart").appendChild(newLevel);
 	writeDebug("Create level " + levelNodesArray.length);
 	levelNodesArray.push(newLevel);
 	return newLevel;
@@ -108,13 +109,11 @@ function createNewLevel()
 
 function writeDiagram()
 {
-	rootElement = document.getElementById("org-chart");
-
 	var person = personMap.CEO;
 	writeBranch(person, 0);
 }
 
-function writeBranch(employee, levelIdx)
+function writeBranch(employee, levelIdx, useSmallFormat)
 {
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
@@ -135,13 +134,21 @@ function writeBranch(employee, levelIdx)
 	{
 		group = createHTMLGroupInLevel(employee.manager, level);
 	}
-	
-	createHTMLPersonInGroup(employee, group);
-	for (var idxChild = 0; idxChild < employee.childArray.length; idxChild++)
+
+	createHTMLPersonInGroup(employee, group, useSmallFormat);
+	var numDependents = employee.childArray.length;
+	var smallFormat = (numDependents > 2);
+	for (var idxChild = 0; idxChild < numDependents; idxChild++)
 	{
 		var dependent = employee.childArray[idxChild];
-		var nextLevel = (dependent.role == "Secretary")? levelIdx: levelIdx + 1;
-		writeBranch(dependent, nextLevel);
+		var nextLevel = levelIdx + 1;
+		// Verify secretary special case
+		if (dependent.role == "Secretary")
+		{
+			smallFormat = (numDependents > 3);
+			nextLevel = levelIdx;
+		}
+		writeBranch(dependent, nextLevel, smallFormat);
 	}
 }
 
@@ -179,8 +186,8 @@ function parseCsvLine(textLine, index)
 		return;
 	}
 
-	var employee = new Person(strArray[0].trim(), strArray[0].trim() + ".jpg", strArray[1]
-			.trim());// , strArray[2].trim());
+	var employee = new Person(strArray[0].trim(), strArray[0].trim() + ".jpg",
+			strArray[1].trim());// , strArray[2].trim());
 	personMap.addPerson(employee, strArray[2].trim());
 	writeDebug("personMap now is " + personMap);
 }
