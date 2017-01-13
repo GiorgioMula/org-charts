@@ -21,7 +21,7 @@ input
 .content
 {
 	border: dashed 1px gray;
-	width: 100%;
+	/*width: 100%;*/
 	height: 20%;
 }
 
@@ -41,8 +41,8 @@ input
 
 .graph
 {
-	overflow-x:auto;
-	overflow-y:auto;
+	/*overflow-x:auto;
+	overflow-y:auto;*/
 	
 	margin: 10px auto;
 	border: solid gray 1px;	
@@ -62,9 +62,8 @@ div.person
 
 .person img
 {
-	height: 140px;
-/*	clip: rect(0px, 140px, 140px, 0px);*/	
-	border-radius: 50%;
+	width: 155px;
+	border-radius: 5%;
 }
 
 div.person p
@@ -91,7 +90,7 @@ div[format=small].person
 
 div[format=small].person img
 {
-	height: 80px;
+	width: 100px;
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -99,11 +98,12 @@ div[format=small].person img
 
 div[format=small].person p
 {
-	top: 20px;
-	left: 75px;
+	top: 10px;
+	left: 80px;
 	width: 120px;
 	heigth: 60%;
 	margin: 0px;
+	font-size:small;
 }
 
 div.person:hover
