@@ -205,7 +205,7 @@ function createHTMLPersonInGroup(person, group, useSmallFormat)
 	var newContent = '<img src="../test/' + dataPath + '/pictures/' + person.img
 			+ '" alt="' + person.name + '" />';
 	newContent += '<p><strong>' + person.name + '</strong><br/>';
-	newContent += '<small>' + person.role + '<small></p>';
+	newContent += '<small>' + person.role + '</small></p>';
 	newNode.innerHTML = newContent;
 	group.appendChild(newNode);
 }
@@ -217,9 +217,11 @@ function createHTMLGroupInLevel(manager, level)
 	newNode.style.display = "inline-block";
 
 	newNode.setAttribute("owner", manager == null ? "CEO" : manager.name);
-	// var newContent = '<svg></svg>'; // TODO: connecting lines, after all person
-	// added
-	// newNode.innerHTML = newContent;
+	if (manager != null)
+	{
+		var newContent = '<a href="#' + manager.name + '">manager: ' + manager.name + '</a>';
+		newNode.innerHTML = newContent;
+	}
 	level.appendChild(newNode);
 	return newNode;
 }
@@ -295,9 +297,12 @@ function compilePersonMap(personObj)
 
 function writeDiagram()
 {
+	// Prepare employee's tree
 	var personMap = compilePersonMap(personBuffer);
-	var person = personMap.CEO;
-	writeBranch(person, 0);
+
+	// call recursive function to pass through entire map
+	writeBranch(personMap.CEO, 0);
+
 	// now set page width to fit largest level
 	var chart = document.getElementById("org-chart");
 	var newWidth = 0;
@@ -307,23 +312,52 @@ function writeDiagram()
 		var personElements = lvl.getElementsByClassName("person");
 		if (personElements != null)
 		{
-			const widthNumber = 180;
-			/*var widthString = personElements[0].getAttribute("style");
-			writeDebug("widthString: " + widthString);
-			var widthNumber = widthString.substring(widthString.indexOf("width:"), widthString.indexOf("px"));
-			writeDebug("widthNumber: " + widthNumber);*/
+			const
+			widthNumber = 180;
+			/*
+			 * var widthString = personElements[0].getAttribute("style");
+			 * writeDebug("widthString: " + widthString); var widthNumber =
+			 * widthString.substring(widthString.indexOf("width:"),
+			 * widthString.indexOf("px")); writeDebug("widthNumber: " + widthNumber);
+			 */
 			var lvlWidth = widthNumber * personElements.length;
 			if (lvlWidth > newWidth)
 			{
 				newWidth = lvlWidth;
-			}		
+			}
 		}
 	}
 	chart.style.width = newWidth + "px";
+/*
+	// set canvas
+	var manager_rect = document.getElementById("Daverio Roberto")
+			.getBoundingClientRect();
+	writeDebug("manager_rect: (" + manager_rect.top + "," + manager_rect.left + ")");
+	var groups = document.getElementsByClassName("group");
+	for (var idx = 0; idx < groups.length; ++idx)
+	{
+		if (groups[idx].getAttribute("owner") == "Daverio Roberto")
+		{
+			var group_rect = groups[idx].getBoundingClientRect();
+			writeDebug("group_rect: (" + group_rect.top + "," + group_rect.left + ")");
+			var c=document.getElementById("relations");
+			var ctx=c.getContext("2d");
+			ctx.beginPath();
+			ctx.moveTo(manager_rect.bottom, manager_rect.left);
+			ctx.lineTo(group_rect.top,group_rect.left);
+			ctx.strokeStyle="#FF0000";
+			ctx.stroke();
+			c.style.width="100%";
+			c.style.heigth="100%";
+		}
+	}
+*/
 }
 
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
+	const
+	PackPersonLimit = 6; // !< Over this limit, the group is shown vertically
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
 	{
@@ -346,7 +380,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 
 	createHTMLPersonInGroup(employee, group, useSmallFormat);
 	var numDependents = employee.childArray.length;
-	var smallFormat = (numDependents > 8);
+	var smallFormat = (numDependents > PackPersonLimit);
 	for (var idxChild = 0; idxChild < numDependents; idxChild++)
 	{
 		var dependent = employee.childArray[idxChild];
@@ -354,7 +388,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 		// Verify secretary special case
 		if (dependent.role == "Secretary")
 		{
-			smallFormat = (numDependents > 9);
+			smallFormat = (numDependents > (PackPersonLimit + 1));
 			nextLevel = levelIdx;
 		}
 		writeBranch(dependent, nextLevel, smallFormat);

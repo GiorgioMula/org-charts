@@ -39,6 +39,8 @@ input
 	text-align: center;
 }
 
+/* GRAPH */
+
 .graph
 {
 	/*overflow-x:auto;
@@ -48,6 +50,44 @@ input
 	border: solid gray 1px;	
 	text-align: center;
 }
+
+#relations
+{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 0px;
+	heigth: 0px;
+	z-index: 100;
+}
+
+/* LEVEL */
+
+div.level
+{
+	margin-top: 10px;
+}
+
+/* GROUP */
+
+div.group
+{
+	border: 1px dashed black;
+	box-shadow: 5px 5px 10px gray;
+	border-radius: 5px;
+	background-color: rgba(240,240,110, 0.5);
+	margin: 10px 10px;
+	vertical-align: top;
+}
+
+div.group a
+{
+	display: block;
+	color: red;
+	text-align: left;
+	margin: 2px 2px;
+}
+
 
 /* PERSON */
 
@@ -63,11 +103,13 @@ div.person
 .person img
 {
 	width: 155px;
+	heigth: 116px; /* 4:3 ratio */
 	border-radius: 5%;
 }
 
 div.person p
 {
+	text-align: center;
 	border: 2px solid black;
 	border-radius: 10%;
 	box-shadow: 5px 5px 10px gray;
@@ -111,35 +153,4 @@ div.person:hover
 	margin: 6px 1px; /* top and bottom 6 px */
 	border: 4px red solid;
 	border-radius: 5%;
-}
-
-
-/*
-#org-chart div p
-{
-	border: 2px solid black;
-	border-radius: 10%;
-	box-shadow: 5px 5px 10px gray;
-	color: white;
-	font-size: 16pt;	
-	background-color: teal;
-	position: absolute;
-	top: 100px;
-	left: 15px;
-	width: 80%;
-}
-*/
-div.group
-{
-	border: 1px dashed black;
-	box-shadow: 5px 5px 10px gray;
-	border-radius: 5px;
-	background-color: rgba(240,240,110, 0.5);
-	margin: 10px 10px;
-	vertical-align: top;
-}
-
-div.level
-{
-	margin-top: 10px;
 }
