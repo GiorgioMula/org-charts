@@ -12,7 +12,13 @@
 	</div>
 	
 	<div class="content">
-		<input type="file" onchange="readSingleFile(event)" />
+		<form>
+			<input type="file" onchange="readSingleFile(event)" />
+			<select id="rootManager">
+		  	<option value="Ceo">Select here</option>
+			</select>
+			<button type="button" onclick="writeDiagram()">Submit</button>
+		</form>
 	</div>
 	
 	<div class="graph" id="org-chart">

@@ -1,4 +1,12 @@
 /**
+ * @file	charts_evo.js
+ * 
+ * @brief Include all methods and classes to write down an formatted org chart, using user file selection.
+ * Entry point is @ref readSingleFile routine
+ */
+
+
+/**
  * Person class constructor
  */
 function Person(aName, imgPath, aRole)
@@ -57,6 +65,9 @@ function PersonMap()
 	};
 }
 
+/**
+ * 
+ */
 var levelNodesArray = new Array();
 
 /**
@@ -64,18 +75,13 @@ var levelNodesArray = new Array();
  * property in order to quickly search using name as a key
  */
 var personBuffer = new Object();
+var personMap;
 
 /**
  * Selected file without type extension, can be use to browse on specific
  * picture data
  */
 var dataPath;
-
-// var indexLastName;
-var indexFirstName;
-var indexManager;
-var indexRole;
-var indexLocation;
 
 /**
  * Parse line by line input file content. On first line expect to find the
@@ -108,33 +114,30 @@ function parseCsvLine(textLine, index)
 	{
 		return;
 	}
-	/*
-	 * if (strArray.length != 3) { alert("File bad format on line " + index);
-	 * return; }
-	 */
+
 	writeDebug("Processing line " + index);
 	if (index == 0)
 	{
 		// First line used to identify colum names
 		var columnArray = textLine.split(";");
-		parseCsvLine.indexLastName = columnArray.indexOf(LastName);
-		parseCsvLine.indexContractType = columnArray.indexOf(Type);
-		indexFirstName = columnArray.indexOf(FirstName);
-		indexManager = columnArray.indexOf(Manager);
-		indexRole = columnArray.indexOf(Role);
-		indexLocation = columnArray.indexOf(Location);
-		if (indexRole == -1 || parseCsvLine.indexLastName == -1
+		this.indexLastName = columnArray.indexOf(LastName);
+		this.indexContractType = columnArray.indexOf(Type);
+		this.indexFirstName = columnArray.indexOf(FirstName);
+		this.indexManager = columnArray.indexOf(Manager);
+		this.indexRole = columnArray.indexOf(Role);
+		this.indexLocation = columnArray.indexOf(Location);
+		if (indexRole == -1 || indexLastName == -1
 				|| indexManager == -1 || indexFirstName == -1)
 		{
 			alert("File bad format on line " + index + "\nindexLastName= "
-					+ parseCsvLine.indexLastName);
+					+ indexLastName);
 		}
 	}
 	else
 	{
 		// Foreach line add into person array buffer.
 		var strArray = textLine.split(";");
-		var nameComplete = toCamelCase(strArray[parseCsvLine.indexLastName].trim()
+		var nameComplete = toCamelCase(strArray[indexLastName].trim()
 				+ " " + strArray[indexFirstName].trim());
 		var PhotoName = nameComplete + ".jpg";
 		writeDebug("PhotoName is " + PhotoName);
@@ -152,9 +155,9 @@ function parseCsvLine(textLine, index)
 		}
 
 		// filter contract type, do not use data if not IND
-		if (parseCsvLine.indexContractType != -1)
+		if (indexContractType != -1)
 		{
-			if (strArray[parseCsvLine.indexContractType].trim() != "IND")
+			if (strArray[indexContractType].trim() != "IND")
 			{
 				return;
 			}
@@ -164,6 +167,12 @@ function parseCsvLine(textLine, index)
 		{
 			employee.managerName = managerName;
 			personBuffer[nameComplete] = employee;
+			// Add person selection
+			var selection = document.getElementById("rootManager");
+			var newOption = document.createElement("option");
+			newOption.setAttribute("value", nameComplete);
+			newOption.innerHTML = nameComplete;
+			selection.appendChild(newOption);
 		}
 	}
 }
@@ -192,9 +201,13 @@ function toCamelCase(inputString)
  * @param group
  *          the DOM parent node
  */
-function createHTMLPersonInGroup(person, group, useSmallFormat)
+function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 {
 	var newNode = document.createElement("div");
+	if (installListener)
+	{
+		newNode.addEventListener("click", showDetails);	
+	}
 	newNode.setAttribute("class", "person");
 	if (useSmallFormat)
 	{
@@ -297,11 +310,17 @@ function compilePersonMap(personObj)
 
 function writeDiagram()
 {
-	// Prepare employee's tree
-	var personMap = compilePersonMap(personBuffer);
+	levelNodesArray = [];
+	document.getElementById("org-chart").innerHTML = "";
 
+	// now read user selection for root diagram point
+	var managerNameSelection = document.getElementById("rootManager");
+	var index = managerNameSelection.selectedIndex;
+	writeDebug("Selected index: " + index + " " + 	managerNameSelection.options[index].innerHTML);
+	var rootManager = personMap.getPerson(managerNameSelection.options[index].innerHTML);
+	
 	// call recursive function to pass through entire map
-	writeBranch(personMap.CEO, 0);
+	writeBranch(rootManager, 0);
 
 	// now set page width to fit largest level
 	var chart = document.getElementById("org-chart");
@@ -328,36 +347,18 @@ function writeDiagram()
 		}
 	}
 	chart.style.width = newWidth + "px";
-/*
-	// set canvas
-	var manager_rect = document.getElementById("Daverio Roberto")
-			.getBoundingClientRect();
-	writeDebug("manager_rect: (" + manager_rect.top + "," + manager_rect.left + ")");
-	var groups = document.getElementsByClassName("group");
-	for (var idx = 0; idx < groups.length; ++idx)
-	{
-		if (groups[idx].getAttribute("owner") == "Daverio Roberto")
-		{
-			var group_rect = groups[idx].getBoundingClientRect();
-			writeDebug("group_rect: (" + group_rect.top + "," + group_rect.left + ")");
-			var c=document.getElementById("relations");
-			var ctx=c.getContext("2d");
-			ctx.beginPath();
-			ctx.moveTo(manager_rect.bottom, manager_rect.left);
-			ctx.lineTo(group_rect.top,group_rect.left);
-			ctx.strokeStyle="#FF0000";
-			ctx.stroke();
-			c.style.width="100%";
-			c.style.heigth="100%";
-		}
-	}
-*/
 }
 
+/**
+ * Recursive function, write HTML structural code for employee object passed by parameter reference 
+ * @param employee person object to write HTML code under related level and group
+ * @param levelIdx the level where to append employee information. If a group already exist on same level, then just add
+ *                 the person, otherwise also create the group.
+ * @param useSmallFormat boolean selection, true write person attribute (format="small") so can use a different CSS style
+ */
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
-	const
-	PackPersonLimit = 6; // !< Over this limit, the group is shown vertically
+	const	PackPersonLimit = 6; // !< Over this limit, the group is shown vertically
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
 	{
@@ -378,7 +379,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 		group = createHTMLGroupInLevel(employee.manager, level);
 	}
 
-	createHTMLPersonInGroup(employee, group, useSmallFormat);
+	createHTMLPersonInGroup(employee, group, useSmallFormat, true);
 	var numDependents = employee.childArray.length;
 	var smallFormat = (numDependents > PackPersonLimit);
 	for (var idxChild = 0; idxChild < numDependents; idxChild++)
@@ -395,6 +396,10 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 	}
 }
 
+/**
+ * chart_evo entry point
+ * @param e event object from input file HTML5 selection
+ */
 function readSingleFile(e)
 {
 	var file = e.target.files[0];
@@ -411,11 +416,37 @@ function readSingleFile(e)
 		var textLines = contents.split("\n");
 
 		textLines.forEach(parseCsvLine);
-		writeDiagram();
+		// Prepare employee's tree
+		personMap = compilePersonMap(personBuffer);
 	};
 	reader.readAsText(file);
 }
 
+
+var personDetails;
+/**
+ * Open a new page with employee details, installed with "onclick" event on person HTML
+ * @param event
+ */
+function showDetails(event)
+{
+	var personName = event.target.parentNode.getAttribute("id");	
+	writeDebug("Click on " + event.target.parentNode);
+	writeDebug("Click on " + personName);
+	
+	if (personName != null)
+	{
+		personDetails = personMap.getPerson(personName);
+		// open new window that will read opener.personDetails object
+		window.open("../htmlSrc/employeeDetails.html", "_blank");
+	}
+}
+
+/**
+ * Print debug information into #debug selector.
+ * @param text information string to write
+ * @param clear true if #debug element must be cleared
+ */
 function writeDebug(text, clear)
 {
 	var dbgElement = document.getElementById("debug");
