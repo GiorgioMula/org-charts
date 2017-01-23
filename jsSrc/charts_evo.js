@@ -8,6 +8,10 @@
 
 /**
  * Person class constructor
+ * @param aName
+ * @param imgPath
+ * @param aRole
+ * @returns object reference
  */
 function Person(aName, imgPath, aRole)
 {
