@@ -6,6 +6,6 @@ Can also select a manager and just print details about his own branch.
 
 <h2>For developers</h2>
 
-Project development details: used Eclipse with JDT plugin. Just open related .croject file and enjoy
-More details into doxy generated document at <a href="../docs/html/index.html">Doxy docs</a>
+<u>Project development details</u>: used Eclipse with JDT plugin. Just open related .project file and enjoy
+More details into doxy generated document at <a href="docs/html/index.html">Doxy docs</a>
 
