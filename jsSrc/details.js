@@ -1,14 +1,14 @@
 /**
  * 
  */
-function test()
-{
-	alert("test");
-}
+
+$(document).ready(function() {
+writeDetails();
+ });
 
 function writeDetails()
 {	
-	var person_div = document.getElementById("person");
+	var person_div = $("#person");
 	createHTMLPerson(window.opener.personDetails, person_div);
 }
 
@@ -27,16 +27,15 @@ function createHTMLPerson(person, parent)
 
 	newNode.innerHTML = newContent;
 	
-	parent.appendChild(newNode);
+	parent.append(newNode);
 }
 
 
 function writeDebug(text, clear)
 {
-	var dbgElement = document.getElementById("debug");
 	if (clear)
 	{
-		dbgElement.innerHTML = "";
+		$("#debug").html();
 	}
-	dbgElement.innerHTML += text + '<br/>';
+	$("#debug").append(text + "<br/>");
 }

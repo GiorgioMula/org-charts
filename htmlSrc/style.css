@@ -6,7 +6,7 @@ body
 
 input
 {
-	min-width: 50%;
+	max-width: 40%;
 	text-align: center;
 }
 
@@ -16,12 +16,13 @@ input
 	width: 100%;
 	height: 20%;
 	text-align: center;
+	background: linear-gradient(-45deg, rgba(130, 130, 130, 0.8), rgba(150, 150, 150, 0.01));
 }
 
 .content
 {
 	border: dashed 1px gray;
-	/*width: 100%;*/
+	width: 100%;
 	height: 20%;
 }
 
@@ -62,7 +63,8 @@ div.group
 	border: 1px dashed black;
 	box-shadow: 5px 5px 10px gray;
 	border-radius: 5px;
-	background-color: rgba(240,240,110, 0.5);
+	background: linear-gradient(to right, rgba(240,240,110, 0.5), rgba(240,240,240, 0.5), rgba(240,240,110, 0.5));
+	/*background-color: rgba(240,240,110, 0.5);*/
 	margin: 10px 10px;
 	vertical-align: top;
 }
@@ -72,7 +74,7 @@ div.group a
 	display: block;
 	color: red;
 	text-align: left;
-	margin: 2px 2px;
+	margin: 2px 2px;	
 }
 
 
@@ -82,16 +84,9 @@ div.person
 {	
 	position: relative;
 	display: inline-block;
-	height: 200px;	
-	width: 160px;
+	height: 240px;	
+	width: 200px;
 	margin: 10px 5px; /* top and bottom 9 px */
-}
-
-.person img
-{
-	width: 155px;
-	heigth: 116px; /* 4:3 ratio */
-	border-radius: 5%;
 }
 
 div.person p
@@ -104,8 +99,8 @@ div.person p
 	font-size: 16pt;	
 	background-color: teal;
 	position: absolute;
-	top: 100px;
-	left: 15px;
+	top: 55%;
+	left: 10%;
 	width: 80%;	
 }
 

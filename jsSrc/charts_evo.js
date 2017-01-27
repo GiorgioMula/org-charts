@@ -99,18 +99,12 @@ var dataPath;
  */
 function parseCsvLine(textLine, index)
 {
-	const
-	LastName = "COGNOME";
-	const
-	FirstName = "NOME";
-	const
-	Role = "funzione";
-	const
-	Manager = "riporto superiore";
-	const
-	Location = "sede";
-	const
-	Type = "tipo contratto";
+	const	LastName = "COGNOME";
+	const FirstName = "NOME";
+	const Role = "funzione";
+	const Manager = "riporto superiore";
+	const Location = "sede";
+	const Type = "tipo contratto";
 
 	// Remove comments or empty lines
 	if (textLine.length == 0 || textLine[0] == '#' || textLine[0] == '\n'
@@ -133,8 +127,7 @@ function parseCsvLine(textLine, index)
 		if (indexRole == -1 || indexLastName == -1
 				|| indexManager == -1 || indexFirstName == -1)
 		{
-			alert("File bad format on line " + index + "\nindexLastName= "
-					+ indexLastName);
+			alert("File bad format on line " + index + "\nindexLastName= " + indexLastName);
 		}
 	}
 	else
@@ -207,6 +200,7 @@ function toCamelCase(inputString)
  */
 function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 {
+	// create person node, parent <di> for image and details elements
 	var newNode = document.createElement("div");
 	if (installListener)
 	{
@@ -219,14 +213,48 @@ function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 	}
 	newNode.setAttribute("id", person.name);
 	newNode.setAttribute("role", person.role);
-	var newContent = '<img src="../test/' + dataPath + '/pictures/' + person.img
-			+ '" alt="' + person.name + '" />';
-	newContent += '<p><strong>' + person.name + '</strong><br/>';
-	newContent += '<small>' + person.role + '</small></p>';
-	newNode.innerHTML = newContent;
+
+	// Create image element 
+	const IMG_WIDTH = 196;
+	var imgObject = document.createElement("img");
+	imgObject.src = "../test/" + dataPath + '/pictures/' + person.img;
+	imgObject.style.width = IMG_WIDTH + "px";
+	var selIndex = document.getElementById("imageRatio").selectedIndex;
+	switch (selIndex)
+	{
+		case 0: // 4:3
+			imgObject.style.borderRadius  = "10%";
+			imgObject.style.height = ((IMG_WIDTH * 3) / 4) + "px";
+			break;
+		case 1: // 1:1
+			imgObject.style.borderRadius  = "50%";
+			imgObject.style.height = IMG_WIDTH + "px";
+			break;
+		case 2: // 16:9
+			default:
+			imgObject.style.borderRadius  = "5%";
+			imgObject.style.height =  ((IMG_WIDTH * 9) / 16) + "px";
+			break;
+	}
+	// 
+	var details = document.createElement("p");
+	details.innerHTML = '<strong>' + person.name + '</strong><br/><small>' + person.role + '</small>';
+
+	// Append image and name
+	newNode.appendChild(imgObject);
+	newNode.appendChild(details);
+	
+	// Append person <div> element to group parent node
 	group.appendChild(newNode);
 }
 
+/**
+ * A group is simply an element to contain employees that share same manager.
+ * We reserve here a <div> element to which append child "employees" 
+ * @param manager reference to manager object
+ * @param level the level object this group belongs to
+ * @returns the DOM new element appended to level
+ */
 function createHTMLGroupInLevel(manager, level)
 {
 	var newNode = document.createElement("div");
@@ -335,15 +363,14 @@ function writeDiagram()
 		var personElements = lvl.getElementsByClassName("person");
 		if (personElements != null)
 		{
-			const
-			widthNumber = 180;
+			var	widthNumber = personElements[0].offsetWidth + 20; /* add person <div> margins*/
 			/*
 			 * var widthString = personElements[0].getAttribute("style");
 			 * writeDebug("widthString: " + widthString); var widthNumber =
 			 * widthString.substring(widthString.indexOf("width:"),
 			 * widthString.indexOf("px")); writeDebug("widthNumber: " + widthNumber);
 			 */
-			var lvlWidth = widthNumber * personElements.length;
+			var lvlWidth = widthNumber * personElements.length + 30; /* add group <div> margins */
 			if (lvlWidth > newWidth)
 			{
 				newWidth = lvlWidth;
@@ -362,7 +389,7 @@ function writeDiagram()
  */
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
-	const	PackPersonLimit = 6; // !< Over this limit, the group is shown vertically
+	const	PERSON_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
 	{
@@ -385,7 +412,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 
 	createHTMLPersonInGroup(employee, group, useSmallFormat, true);
 	var numDependents = employee.childArray.length;
-	var smallFormat = (numDependents > PackPersonLimit);
+	var smallFormat = (numDependents > PERSON_PACK_LIMIT);
 	for (var idxChild = 0; idxChild < numDependents; idxChild++)
 	{
 		var dependent = employee.childArray[idxChild];
@@ -393,7 +420,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 		// Verify secretary special case
 		if (dependent.role == "Secretary")
 		{
-			smallFormat = (numDependents > (PackPersonLimit + 1));
+			smallFormat = (numDependents > (PERSON_PACK_LIMIT + 1));
 			nextLevel = levelIdx;
 		}
 		writeBranch(dependent, nextLevel, smallFormat);

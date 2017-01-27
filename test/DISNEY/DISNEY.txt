@@ -1,4 +1,4 @@
-COGNOME;NOME;qualifica;reparto;riporto superiore;
+COGNOME;NOME;funzione;reparto;riporto superiore;
 PAPERONE;;Manager;;CEO;
 NONNA;Papera;Secretary;;PAPERONE;
 PIPPO;;Architect;;PAPERONE;
