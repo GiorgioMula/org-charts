@@ -53,7 +53,7 @@ input
 
 div.level
 {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 /* GROUP */
@@ -63,8 +63,7 @@ div.group
 	border: 1px dashed black;
 	box-shadow: 5px 5px 10px gray;
 	border-radius: 5px;
-	background: linear-gradient(to right, rgba(240,240,110, 0.5), rgba(240,240,240, 0.5), rgba(240,240,110, 0.5));
-	/*background-color: rgba(240,240,110, 0.5);*/
+	background: linear-gradient(to right, rgba(236,110,37, 0.5), rgba(240,240,240, 0.5), rgba(236,110,37, 0.5));
 	margin: 10px 10px;
 	vertical-align: top;
 }
@@ -97,9 +96,9 @@ div.person p
 	box-shadow: 5px 5px 10px gray;
 	color: white;
 	font-size: 16pt;	
-	background-color: teal;
+	background-color: rgba(128, 4, 0, 0.7);
 	position: absolute;
-	top: 55%;
+	top: 60%;
 	left: 10%;
 	width: 80%;	
 }
@@ -110,6 +109,7 @@ div[format=small].person
 	display: block;
 	width: 200px;
 	height: 80px;
+	margin: 10px 5px; /* top and bottom 10 px */
 }
 
 div[format=small].person img

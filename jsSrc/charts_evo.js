@@ -5,9 +5,9 @@
  * Entry point is @ref readSingleFile routine
  */
 
-
 /**
  * Person class constructor
+ * 
  * @param aName
  * @param imgPath
  * @param aRole
@@ -99,12 +99,18 @@ var dataPath;
  */
 function parseCsvLine(textLine, index)
 {
-	const	LastName = "COGNOME";
-	const FirstName = "NOME";
-	const Role = "funzione";
-	const Manager = "riporto superiore";
-	const Location = "sede";
-	const Type = "tipo contratto";
+	const
+	LastName = "COGNOME";
+	const
+	FirstName = "NOME";
+	const
+	Role = "funzione";
+	const
+	Manager = "riporto superiore";
+	const
+	Location = "sede";
+	const
+	Type = "tipo contratto";
 
 	// Remove comments or empty lines
 	if (textLine.length == 0 || textLine[0] == '#' || textLine[0] == '\n'
@@ -124,18 +130,19 @@ function parseCsvLine(textLine, index)
 		this.indexManager = columnArray.indexOf(Manager);
 		this.indexRole = columnArray.indexOf(Role);
 		this.indexLocation = columnArray.indexOf(Location);
-		if (indexRole == -1 || indexLastName == -1
-				|| indexManager == -1 || indexFirstName == -1)
+		if (indexRole == -1 || indexLastName == -1 || indexManager == -1
+				|| indexFirstName == -1)
 		{
-			alert("File bad format on line " + index + "\nindexLastName= " + indexLastName);
+			alert("File bad format on line " + index + "\nindexLastName= "
+					+ indexLastName);
 		}
 	}
 	else
 	{
 		// Foreach line add into person array buffer.
 		var strArray = textLine.split(";");
-		var nameComplete = toCamelCase(strArray[indexLastName].trim()
-				+ " " + strArray[indexFirstName].trim());
+		var nameComplete = toCamelCase(strArray[indexLastName].trim() + " "
+				+ strArray[indexFirstName].trim());
 		var PhotoName = nameComplete + ".jpg";
 		writeDebug("PhotoName is " + PhotoName);
 		var employee = new Person(nameComplete, PhotoName, strArray[indexRole]
@@ -204,18 +211,20 @@ function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 	var newNode = document.createElement("div");
 	if (installListener)
 	{
-		newNode.addEventListener("click", showDetails);	
+		newNode.addEventListener("click", showDetails);
 	}
 	newNode.setAttribute("class", "person");
 	if (useSmallFormat)
 	{
-		newNode.setAttribute("format", "small");
+		newNode.format = "small";
 	}
-	newNode.setAttribute("id", person.name);
-	newNode.setAttribute("role", person.role);
+	newNode.id = person.name;
+	newNode.role = person.role;
 
-	// Create image element 
-	const IMG_WIDTH = 196;
+	// Create image element
+	const
+	IMG_WIDTH = 196;
+
 	var imgObject = document.createElement("img");
 	imgObject.src = "../test/" + dataPath + '/pictures/' + person.img;
 	imgObject.style.width = IMG_WIDTH + "px";
@@ -223,36 +232,67 @@ function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 	switch (selIndex)
 	{
 		case 0: // 4:3
-			imgObject.style.borderRadius  = "10%";
+			imgObject.style.borderRadius = "10%";
 			imgObject.style.height = ((IMG_WIDTH * 3) / 4) + "px";
 			break;
 		case 1: // 1:1
-			imgObject.style.borderRadius  = "50%";
+			imgObject.style.borderRadius = "50%";
 			imgObject.style.height = IMG_WIDTH + "px";
 			break;
 		case 2: // 16:9
-			default:
-			imgObject.style.borderRadius  = "5%";
-			imgObject.style.height =  ((IMG_WIDTH * 9) / 16) + "px";
+		default:
+			imgObject.style.borderRadius = "5%";
+			imgObject.style.height = ((IMG_WIDTH * 9) / 16) + "px";
 			break;
 	}
 	// 
 	var details = document.createElement("p");
-	details.innerHTML = '<strong>' + person.name + '</strong><br/><small>' + person.role + '</small>';
+	details.innerHTML = '<strong>' + person.name + '</strong><br/><small>'
+			+ person.role + '</small>';
 
 	// Append image and name
 	newNode.appendChild(imgObject);
 	newNode.appendChild(details);
-	
+
 	// Append person <div> element to group parent node
 	group.appendChild(newNode);
 }
 
+function togglePersonSize(event)
+{
+	var group = $(event.target).parent();
+	group.children("div").each(function()
+	{
+		var person = $(this);
+		if (person.attr("format") != "small")
+		{
+			person.attr("format", "small");
+			person.children("img").each(function()
+					{
+				$(this).css("height", 80);
+				$(this).css("width", 80);
+					});
+		}
+		else
+		{
+			person.attr("format", "normal");
+			person.children("img").each(function()
+					{
+				$(this).css("height", 196);
+				$(this).css("width", 196);
+					});
+		}
+	});
+}
+
 /**
- * A group is simply an element to contain employees that share same manager.
- * We reserve here a <div> element to which append child "employees" 
- * @param manager reference to manager object
- * @param level the level object this group belongs to
+ * A group is simply an element to contain employees that share same manager. We
+ * reserve here a <div> element to which append child "employees"
+ * 
+ * @param manager
+ *          reference to manager object
+ * @param level
+ *          the level object this group belongs to
  * @returns the DOM new element appended to level
  */
 function createHTMLGroupInLevel(manager, level)
@@ -260,13 +300,17 @@ function createHTMLGroupInLevel(manager, level)
 	var newNode = document.createElement("div");
 	newNode.setAttribute("class", "group");
 	newNode.style.display = "inline-block";
+	newNode.style.position = "relative";
 
-	newNode.setAttribute("owner", manager == null ? "CEO" : manager.name);
+	var owner = manager == null ? "CEO" : manager.name;
+	newNode.setAttribute("owner", owner);
+	var newContent = '<input type="button" onclick="togglePersonSize(event)" style="position: absolute; top: 5px; right: 20px"></input>';
 	if (manager != null)
 	{
-		var newContent = '<a href="#' + manager.name + '">manager: ' + manager.name + '</a>';
-		newNode.innerHTML = newContent;
+		newContent += '<a href="#' + manager.name + '">manager: ' + manager.name
+				+ '</a>';
 	}
+	newNode.innerHTML = newContent;
 	level.appendChild(newNode);
 	return newNode;
 }
@@ -348,9 +392,11 @@ function writeDiagram()
 	// now read user selection for root diagram point
 	var managerNameSelection = document.getElementById("rootManager");
 	var index = managerNameSelection.selectedIndex;
-	writeDebug("Selected index: " + index + " " + 	managerNameSelection.options[index].innerHTML);
-	var rootManager = personMap.getPerson(managerNameSelection.options[index].innerHTML);
-	
+	writeDebug("Selected index: " + index + " "
+			+ managerNameSelection.options[index].innerHTML);
+	var rootManager = personMap
+			.getPerson(managerNameSelection.options[index].innerHTML);
+
 	// call recursive function to pass through entire map
 	writeBranch(rootManager, 0);
 
@@ -363,14 +409,20 @@ function writeDiagram()
 		var personElements = lvl.getElementsByClassName("person");
 		if (personElements != null)
 		{
-			var	widthNumber = personElements[0].offsetWidth + 20; /* add person <div> margins*/
+			var widthNumber = personElements[0].offsetWidth + 20; /*
+																														 * add person <div>
+																														 * margins
+																														 */
 			/*
 			 * var widthString = personElements[0].getAttribute("style");
 			 * writeDebug("widthString: " + widthString); var widthNumber =
 			 * widthString.substring(widthString.indexOf("width:"),
 			 * widthString.indexOf("px")); writeDebug("widthNumber: " + widthNumber);
 			 */
-			var lvlWidth = widthNumber * personElements.length + 30; /* add group <div> margins */
+			var lvlWidth = widthNumber * personElements.length + 30; /*
+																																 * add group
+																																 * <div> margins
+																																 */
 			if (lvlWidth > newWidth)
 			{
 				newWidth = lvlWidth;
@@ -380,16 +432,39 @@ function writeDiagram()
 	chart.style.width = newWidth + "px";
 }
 
+function printDiagram()
+{
+	var ref = window.open("empty.html", "_blank", "fullscreen=yes");
+	// ref.onload = function()
+	{
+		var destination = ref.document.body;
+		var source = document.getElementById("org-chart");
+		destination.innerHTML = "<p>test</p>";
+		// destination.appendChild(source.cloneNode(true));
+		// ref.setTimeout(function(){ref.print();}, 1000);
+		// ref.print();
+	}
+	;
+}
+
 /**
- * Recursive function, write HTML structural code for employee object passed by parameter reference 
- * @param employee person object to write HTML code under related level and group
- * @param levelIdx the level where to append employee information. If a group already exist on same level, then just add
- *                 the person, otherwise also create the group.
- * @param useSmallFormat boolean selection, true write person attribute (format="small") so can use a different CSS style
+ * Recursive function, write HTML structural code for employee object passed by
+ * parameter reference
+ * 
+ * @param employee
+ *          person object to write HTML code under related level and group
+ * @param levelIdx
+ *          the level where to append employee information. If a group already
+ *          exist on same level, then just add the person, otherwise also create
+ *          the group.
+ * @param useSmallFormat
+ *          boolean selection, true write person attribute (format="small") so
+ *          can use a different CSS style
  */
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
-	const	PERSON_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
+	const
+	PERSON_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
 	{
@@ -429,7 +504,9 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 
 /**
  * chart_evo entry point
- * @param e event object from input file HTML5 selection
+ * 
+ * @param e
+ *          event object from input file HTML5 selection
  */
 function readSingleFile(e)
 {
@@ -453,18 +530,19 @@ function readSingleFile(e)
 	reader.readAsText(file);
 }
 
-
 var personDetails;
 /**
- * Open a new page with employee details, installed with "onclick" event on person HTML
+ * Open a new page with employee details, installed with "onclick" event on
+ * person HTML
+ * 
  * @param event
  */
 function showDetails(event)
 {
-	var personName = event.target.parentNode.getAttribute("id");	
+	var personName = event.target.parentNode.getAttribute("id");
 	writeDebug("Click on " + event.target.parentNode);
 	writeDebug("Click on " + personName);
-	
+
 	if (personName != null)
 	{
 		personDetails = personMap.getPerson(personName);
@@ -475,8 +553,11 @@ function showDetails(event)
 
 /**
  * Print debug information into #debug selector.
- * @param text information string to write
- * @param clear true if #debug element must be cleared
+ * 
+ * @param text
+ *          information string to write
+ * @param clear
+ *          true if #debug element must be cleared
  */
 function writeDebug(text, clear)
 {
