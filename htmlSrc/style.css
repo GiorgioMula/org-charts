@@ -79,7 +79,7 @@ div.group a
 
 /* PERSON */
 
-div.person
+div.Employee
 {	
 	position: relative;
 	display: inline-block;
@@ -88,7 +88,7 @@ div.person
 	margin: 10px 5px; /* top and bottom 9 px */
 }
 
-div.person p
+div.Employee p
 {
 	text-align: center;	
 	border: 2px solid black;
@@ -104,7 +104,7 @@ div.person p
 }
 
 /* SMALL FORMAT PERSONS */
-div[format=small].person
+div[format=small].Employee
 {
 	display: block;
 	width: 200px;
@@ -112,7 +112,7 @@ div[format=small].person
 	margin: 10px 5px; /* top and bottom 10 px */
 }
 
-div[format=small].person img
+div[format=small].Employee img
 {
 	width: 100px;
 	position: absolute;
@@ -120,7 +120,7 @@ div[format=small].person img
 	left: 0px;
 }
 
-div[format=small].person p
+div[format=small].Employee p
 {
 	top: 10px;
 	left: 80px;
@@ -130,7 +130,7 @@ div[format=small].person p
 	font-size:small;
 }
 
-div.person:hover
+div.Employee:hover
 {
 	margin: 6px 1px; /* top and bottom 6 px */
 	border: 4px red solid;

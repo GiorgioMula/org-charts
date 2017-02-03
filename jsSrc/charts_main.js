@@ -1,73 +1,9 @@
 /**
- * @file	charts_evo.js
+ * @file	charts_main.js
  * 
  * @brief Include all methods and classes to write down an formatted org chart, using user file selection.
- * Entry point is @ref readSingleFile routine
+ * Entry point is @ref readSingleFile routine, functions referred into charts_image.js
  */
-
-/**
- * Person class constructor
- * 
- * @param aName
- * @param imgPath
- * @param aRole
- * @returns object reference
- */
-function Person(aName, imgPath, aRole)
-{
-	this.name = aName;
-	this.img = imgPath;
-	this.role = aRole;
-	this.manager = null;
-	this.managerName = "";
-	this.childArray = new Array();
-
-	this.addChild = function(refPerson)
-	{
-		this.childArray.push(refPerson);
-	};
-
-	this.addManager = function(refManager)
-	{
-		this.manager = refManager;
-	};
-}
-
-/**
- * Person map class used to store references to person objects with parent/child
- * relationship. This way it is possible to use recursive functions to pass
- * through the whole map.
- */
-function PersonMap()
-{
-	/**
-	 * Add reference for new person into an object property. The update its
-	 * manager child list and the pointer to manager itself.
-	 */
-	this.addPerson = function(refPerson, personManagerName)
-	{
-		writeDebug("Add person " + refPerson.name + " manager " + personManagerName);
-		this[refPerson.name] = refPerson;
-		if (personManagerName == "")
-		{
-			this.CEO = refPerson;
-			writeDebug(refPerson.name + " is the CEO !");
-		}
-		else
-		{
-			var managerObject = this[personManagerName];
-			refPerson.addManager(managerObject);
-			managerObject.addChild(refPerson);
-			writeDebug("Added " + managerObject.name + " as " + refPerson.name
-					+ " manager");
-		}
-	};
-
-	this.getPerson = function(personName)
-	{
-		return this[personName];
-	};
-}
 
 /**
  * 
@@ -75,11 +11,11 @@ function PersonMap()
 var levelNodesArray = new Array();
 
 /**
- * Person object used to store all persons founded in file. Use person name as
- * property in order to quickly search using name as a key
+ * Employee object used to store all Employees founded in file. Use Employee
+ * name as property in order to quickly search using name as a key
  */
-var personBuffer = new Object();
-var personMap;
+var EmployeeBuffer = new Object();
+var employeeMap;
 
 /**
  * Selected file without type extension, can be use to browse on specific
@@ -90,7 +26,7 @@ var dataPath;
 /**
  * Parse line by line input file content. On first line expect to find the
  * column meanning, so store all data and use to to create related field into
- * person objects dinamically. Mandatory column titles shall be "COGNOME",
+ * Employee objects dinamically. Mandatory column titles shall be "COGNOME",
  * "NOME", "qualifica", "riporto superiore"
  * 
  * @param textLine
@@ -139,13 +75,13 @@ function parseCsvLine(textLine, index)
 	}
 	else
 	{
-		// Foreach line add into person array buffer.
+		// Foreach line add into Employee array buffer.
 		var strArray = textLine.split(";");
 		var nameComplete = toCamelCase(strArray[indexLastName].trim() + " "
 				+ strArray[indexFirstName].trim());
 		var PhotoName = nameComplete + ".jpg";
 		writeDebug("PhotoName is " + PhotoName);
-		var employee = new Person(nameComplete, PhotoName, strArray[indexRole]
+		var employee = new Employee(nameComplete, PhotoName, strArray[indexRole]
 				.trim());
 		var managerName = toCamelCase(strArray[indexManager].trim());
 
@@ -170,8 +106,8 @@ function parseCsvLine(textLine, index)
 		if (managerName.length != 0)
 		{
 			employee.managerName = managerName;
-			personBuffer[nameComplete] = employee;
-			// Add person selection
+			EmployeeBuffer[nameComplete] = employee;
+			// Add Employee selection
 			var selection = document.getElementById("rootManager");
 			var newOption = document.createElement("option");
 			newOption.setAttribute("value", nameComplete);
@@ -198,35 +134,36 @@ function toCamelCase(inputString)
 
 /**
  * Attach a new DOM element to parent. The DOM element is a "div" represent the
- * employee with class="person" and id=person's name
+ * employee with class="Employee" and id=Employee's name
  * 
- * @param person
- *          the person data
+ * @param Employee
+ *          the Employee object instance
  * @param group
  *          the DOM parent node
  */
-function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
+function createHTMLEmployeeInGroup(Employee, group, useSmallFormat,
+		installListener)
 {
-	// create person node, parent <di> for image and details elements
+	// create Employee node, parent <di> for image and details elements
 	var newNode = document.createElement("div");
 	if (installListener)
 	{
 		newNode.addEventListener("click", showDetails);
 	}
-	newNode.setAttribute("class", "person");
+	newNode.setAttribute("class", "Employee");
 	if (useSmallFormat)
 	{
 		newNode.format = "small";
 	}
-	newNode.id = person.name;
-	newNode.role = person.role;
+	newNode.id = Employee.name;
+	newNode.role = Employee.role;
 
 	// Create image element
 	const
 	IMG_WIDTH = 196;
 
 	var imgObject = document.createElement("img");
-	imgObject.src = "../test/" + dataPath + '/pictures/' + person.img;
+	imgObject.src = "../test/" + dataPath + '/pictures/' + Employee.img;
 	imgObject.style.width = IMG_WIDTH + "px";
 	var selIndex = document.getElementById("imageRatio").selectedIndex;
 	switch (selIndex)
@@ -247,42 +184,15 @@ function createHTMLPersonInGroup(person, group, useSmallFormat, installListener)
 	}
 	// 
 	var details = document.createElement("p");
-	details.innerHTML = '<strong>' + person.name + '</strong><br/><small>'
-			+ person.role + '</small>';
+	details.innerHTML = '<strong>' + Employee.name + '</strong><br/><small>'
+			+ Employee.role + '</small>';
 
 	// Append image and name
 	newNode.appendChild(imgObject);
 	newNode.appendChild(details);
 
-	// Append person <div> element to group parent node
+	// Append Employee <div> element to group parent node
 	group.appendChild(newNode);
-}
-
-function togglePersonSize(event)
-{
-	var group = $(event.target).parent();
-	group.children("div").each(function()
-	{
-		var person = $(this);
-		if (person.attr("format") != "small")
-		{
-			person.attr("format", "small");
-			person.children("img").each(function()
-					{
-				$(this).css("height", 80);
-				$(this).css("width", 80);
-					});
-		}
-		else
-		{
-			person.attr("format", "normal");
-			person.children("img").each(function()
-					{
-				$(this).css("height", 196);
-				$(this).css("width", 196);
-					});
-		}
-	});
 }
 
 /**
@@ -304,7 +214,7 @@ function createHTMLGroupInLevel(manager, level)
 
 	var owner = manager == null ? "CEO" : manager.name;
 	newNode.setAttribute("owner", owner);
-	var newContent = '<input type="button" onclick="togglePersonSize(event)" style="position: absolute; top: 5px; right: 20px"></input>';
+	var newContent = '<input type="button" onclick="toggleEmployeeSize(event)" style="position: absolute; top: 5px; right: 20px"></input>';
 	if (manager != null)
 	{
 		newContent += '<a href="#' + manager.name + '">manager: ' + manager.name
@@ -313,6 +223,12 @@ function createHTMLGroupInLevel(manager, level)
 	newNode.innerHTML = newContent;
 	level.appendChild(newNode);
 	return newNode;
+}
+
+function toggleEmployeeSize(event)
+{
+	var group = $(event.target).parent();
+	group.children("div").each(toggleDivFormat);
 }
 
 /**
@@ -331,57 +247,60 @@ function createNewLevel()
 }
 
 /**
- * Given a person buffer object from CSV parsing, must move all elements into
- * personMap object that has parent/child relationship. In that case diagram is
- * a simple recursive iteration starting from root parent element in personMap.
+ * Given a Employee buffer object from CSV parsing, must move all elements into
+ * EmployeeMap object that has parent/child relationship. In that case diagram
+ * is a simple recursive iteration starting from root parent element in
+ * EmployeeMap.
  * 
- * @param personObj
- * @returns {PersonMap}
+ * @param EmployeeObj
+ * @returns {EmployeeMap}
  */
-function compilePersonMap(personObj)
+function compileEmployeeMap(EmployeeObj)
 {
-	var personMap = new PersonMap();
-	writeDebug("Object.keys(personObj).length = " + Object.keys(personObj).length);
-	while (Object.keys(personObj).length)
+	var employeeMap = new EmployeeMap();
+	writeDebug("Object.keys(EmployeeObj).length = "
+			+ Object.keys(EmployeeObj).length);
+	while (Object.keys(EmployeeObj).length)
 	{
-		var rootPersonExists = false;
-		for (property in personObj)
+		var rootEmployeeExists = false;
+		for (property in EmployeeObj)
 		{
-			var person = personObj[property];
+			var Employee = EmployeeObj[property];
 
-			if (person.managerName == "Ceo")
+			if (Employee.managerName == "Ceo")
 			{
-				rootPersonExists = true;
-				personMap.CEO = person;
-				personMap.addPerson(person, "");
-				delete personObj[property];
+				rootEmployeeExists = true;
+				employeeMap.CEO = Employee;
+				employeeMap.addEmployee(Employee, "");
+				delete EmployeeObj[property];
 				break;
 			}
 			else
 			{
-				var manager = personMap.getPerson(person.managerName);
+				var manager = employeeMap.getEmployee(Employee.managerName);
 				if (manager != null)
 				{
-					rootPersonExists = true;
-					personMap.addPerson(person, person.managerName);
-					delete personObj[property];
+					rootEmployeeExists = true;
+					employeeMap.addEmployee(Employee, Employee.managerName);
+					delete EmployeeObj[property];
 					break;
 				}
 			}
 		}
-		if (!rootPersonExists)
+		if (!rootEmployeeExists)
 		{
-			var persons = "";
-			for (property in personObj)
+			var Employees = "";
+			for (property in EmployeeObj)
 			{
-				persons += property;
+				Employees += property;
 			}
-			alert("root person not found in diagram, still "
-					+ Object.keys(personObj).length + " persons to assign: " + persons);
+			alert("root Employee not found in diagram, still "
+					+ Object.keys(EmployeeObj).length + " Employees to assign: "
+					+ Employees);
 			return null;
 		}
 	}
-	return personMap;
+	return employeeMap;
 }
 
 function writeDiagram()
@@ -394,8 +313,8 @@ function writeDiagram()
 	var index = managerNameSelection.selectedIndex;
 	writeDebug("Selected index: " + index + " "
 			+ managerNameSelection.options[index].innerHTML);
-	var rootManager = personMap
-			.getPerson(managerNameSelection.options[index].innerHTML);
+	var rootManager = employeeMap
+			.getEmployee(managerNameSelection.options[index].innerHTML);
 
 	// call recursive function to pass through entire map
 	writeBranch(rootManager, 0);
@@ -406,23 +325,24 @@ function writeDiagram()
 	for (var idx = 0; idx < levelNodesArray.length; idx++)
 	{
 		var lvl = levelNodesArray[idx];
-		var personElements = lvl.getElementsByClassName("person");
-		if (personElements != null)
+		var EmployeeElements = lvl.getElementsByClassName("Employee");
+		if (EmployeeElements != null)
 		{
-			var widthNumber = personElements[0].offsetWidth + 20; /*
-																														 * add person <div>
-																														 * margins
-																														 */
+			var widthNumber = EmployeeElements[0].offsetWidth + 20; /*
+																															 * add Employee
+																															 * <div> margins
+																															 */
 			/*
-			 * var widthString = personElements[0].getAttribute("style");
+			 * var widthString = EmployeeElements[0].getAttribute("style");
 			 * writeDebug("widthString: " + widthString); var widthNumber =
 			 * widthString.substring(widthString.indexOf("width:"),
 			 * widthString.indexOf("px")); writeDebug("widthNumber: " + widthNumber);
 			 */
-			var lvlWidth = widthNumber * personElements.length + 30; /*
-																																 * add group
-																																 * <div> margins
-																																 */
+			var lvlWidth = widthNumber * EmployeeElements.length + 30;
+			
+			/*
+			 * add group <div> margins
+			 */
 			if (lvlWidth > newWidth)
 			{
 				newWidth = lvlWidth;
@@ -452,19 +372,19 @@ function printDiagram()
  * parameter reference
  * 
  * @param employee
- *          person object to write HTML code under related level and group
+ *          Employee object to write HTML code under related level and group
  * @param levelIdx
  *          the level where to append employee information. If a group already
- *          exist on same level, then just add the person, otherwise also create
- *          the group.
+ *          exist on same level, then just add the Employee, otherwise also
+ *          create the group.
  * @param useSmallFormat
- *          boolean selection, true write person attribute (format="small") so
+ *          boolean selection, true write Employee attribute (format="small") so
  *          can use a different CSS style
  */
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
 	const
-	PERSON_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
+	Employee_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
 	var level = levelNodesArray[levelIdx];
 	if (level == null)
 	{
@@ -485,9 +405,9 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 		group = createHTMLGroupInLevel(employee.manager, level);
 	}
 
-	createHTMLPersonInGroup(employee, group, useSmallFormat, true);
+	createHTMLEmployeeInGroup(employee, group, useSmallFormat, true);
 	var numDependents = employee.childArray.length;
-	var smallFormat = (numDependents > PERSON_PACK_LIMIT);
+	var smallFormat = (numDependents > Employee_PACK_LIMIT);
 	for (var idxChild = 0; idxChild < numDependents; idxChild++)
 	{
 		var dependent = employee.childArray[idxChild];
@@ -495,7 +415,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 		// Verify secretary special case
 		if (dependent.role == "Secretary")
 		{
-			smallFormat = (numDependents > (PERSON_PACK_LIMIT + 1));
+			smallFormat = (numDependents > (Employee_PACK_LIMIT + 1));
 			nextLevel = levelIdx;
 		}
 		writeBranch(dependent, nextLevel, smallFormat);
@@ -525,28 +445,28 @@ function readSingleFile(e)
 
 		textLines.forEach(parseCsvLine);
 		// Prepare employee's tree
-		personMap = compilePersonMap(personBuffer);
+		employeeMap = compileEmployeeMap(EmployeeBuffer);
 	};
 	reader.readAsText(file);
 }
 
-var personDetails;
+var EmployeeDetails;
 /**
  * Open a new page with employee details, installed with "onclick" event on
- * person HTML
+ * Employee HTML
  * 
  * @param event
  */
 function showDetails(event)
 {
-	var personName = event.target.parentNode.getAttribute("id");
+	var EmployeeName = event.target.parentNode.getAttribute("id");
 	writeDebug("Click on " + event.target.parentNode);
-	writeDebug("Click on " + personName);
+	writeDebug("Click on " + EmployeeName);
 
-	if (personName != null)
+	if (EmployeeName != null)
 	{
-		personDetails = personMap.getPerson(personName);
-		// open new window that will read opener.personDetails object
+		EmployeeDetails = employeeMap.getEmployee(EmployeeName);
+		// open new window that will read opener.PersonDetails object
 		window.open("../htmlSrc/employeeDetails.html", "_blank");
 	}
 }
