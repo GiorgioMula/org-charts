@@ -6,11 +6,6 @@
  */
 
 /**
- * 
- */
-var levelNodesArray = new Array();
-
-/**
  * Employee object used to store all Employees founded in file. Use Employee
  * name as property in order to quickly search using name as a key
  */
@@ -236,13 +231,12 @@ function toggleEmployeeSize(event)
  * 
  * @returns reference to <div> element representing an inline-block styled level
  */
-function createNewLevel()
+function createNewLevel(level_idx)
 {
 	var newLevel = document.createElement("div");
 	newLevel.setAttribute("class", "level");
+	newLevel.setAttribute("id", "level_" + level_idx);
 	document.getElementById("org-chart").appendChild(newLevel);
-	writeDebug("Create level " + levelNodesArray.length);
-	levelNodesArray.push(newLevel);
 	return newLevel;
 }
 
@@ -305,7 +299,6 @@ function compileEmployeeMap(EmployeeObj)
 
 function writeDiagram()
 {
-	levelNodesArray = [];
 	document.getElementById("org-chart").innerHTML = "";
 
 	// now read user selection for root diagram point
@@ -319,37 +312,19 @@ function writeDiagram()
 	// call recursive function to pass through entire map
 	writeBranch(rootManager, 0);
 
-	// now set page width to fit largest level
-	var chart = document.getElementById("org-chart");
-	var newWidth = 0;
-	for (var idx = 0; idx < levelNodesArray.length; idx++)
-	{
-		var lvl = levelNodesArray[idx];
-		var EmployeeElements = lvl.getElementsByClassName("Employee");
-		if (EmployeeElements != null)
+	// now set page width to fit largest level, foreach "level" class count number of "Employee"
+	// class objects: largest level force page width in pixels (TODO: remove magic numbers)
+	var largestLevelNumEmployees = 0;
+	$(".level").each(function(){
+		var numEmployees = $(this).find(".Employee").length;
+		if (numEmployees > largestLevelNumEmployees)
 		{
-			var widthNumber = EmployeeElements[0].offsetWidth + 20; /*
-																															 * add Employee
-																															 * <div> margins
-																															 */
-			/*
-			 * var widthString = EmployeeElements[0].getAttribute("style");
-			 * writeDebug("widthString: " + widthString); var widthNumber =
-			 * widthString.substring(widthString.indexOf("width:"),
-			 * widthString.indexOf("px")); writeDebug("widthNumber: " + widthNumber);
-			 */
-			var lvlWidth = widthNumber * EmployeeElements.length + 30;
-			
-			/*
-			 * add group <div> margins
-			 */
-			if (lvlWidth > newWidth)
-			{
-				newWidth = lvlWidth;
-			}
+			largestLevelNumEmployees = numEmployees;
 		}
-	}
-	chart.style.width = newWidth + "px";
+	});
+	newWidth = 50 + (largestLevelNumEmployees * ($(".Employee").first().outerWidth(true)));		
+	
+	$("#org-chart").css("min-width", newWidth + "px");
 }
 
 function printDiagram()
@@ -385,21 +360,19 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 {
 	const
 	Employee_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
-	var level = levelNodesArray[levelIdx];
+	//var level = levelNodesArray[levelIdx];
+	var level = document.getElementById("level_" + levelIdx);
 	if (level == null)
 	{
-		level = createNewLevel();
+		level = createNewLevel(levelIdx);
 	}
+	
+	// Get group where to add this employee, it may already exist
 	var group = null;
-	var groups = level.getElementsByTagName("div");
-	for (var groupIndex = 0; groupIndex < groups.length; groupIndex++)
+	if (employee.manager != null)
 	{
-		if (groups[groupIndex].getAttribute("owner") == employee.manager.name)
-		{
-			group = groups[groupIndex];
-			break;
-		}
-	}
+		group = $(level).find("[owner=" + employee.manager.name + "]").get(0);
+	}	
 	if (group == null)
 	{
 		group = createHTMLGroupInLevel(employee.manager, level);
