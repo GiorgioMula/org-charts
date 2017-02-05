@@ -1,6 +1,7 @@
 var charts__evo_8js =
 [
     [ "compilePersonMap", "charts__evo_8js.html#af5424ef533f005025597ce7ab238a88c", null ],
+    [ "createHTMLGroupInLevel", "charts__evo_8js.html#a85c981d2c2c94b9eac9ee264554b27c3", null ],
     [ "createHTMLPersonInGroup", "charts__evo_8js.html#a8ec40a66dbbd4c2f10132aa23798ce31", null ],
     [ "createNewLevel", "charts__evo_8js.html#a3358b93dc2af36f401bb95e8ef86dc44", null ],
     [ "parseCsvLine", "charts__evo_8js.html#a2ed9fe98737ce6724e7aa0073297701c", null ],

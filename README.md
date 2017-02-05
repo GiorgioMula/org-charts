@@ -1,8 +1,13 @@
 # org-charts
 
-Application to generate an office organization chart. Given a .csv file with employees name and relations, 
-and of course related images, this project render an html page to open in your favorite browser.
-Can also select a manager and just print details about his own branch.
+Org-charts is a stand-alone browser application to generate cool organization charts. User select a .csv file with employees name and relations and, of course, related images names to render an html page to open in your favorite browser.
+Can also select a middle-manager employee and just print details about his own branch.
+
+<h2>Some screenshots</h2>
+
+<img src="doc/Selezione.png" caption="Data and branch-manager selection" />
+
+<img src="doc/Grafico.png" caption="Chart example" />
 
 <h2>For developers</h2>
 

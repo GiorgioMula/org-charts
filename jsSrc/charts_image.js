@@ -1,11 +1,11 @@
 /**
  * @file charts_image.js
  * @brief Image manipulations functions used by main file
- * @ref charts-main.js
+ * @ref charts_main.js
  */
 
 /**
- * Routine to operate on <div> employees HTML element, change div element "format"
+ * Routine to operate on "div" employees HTML element, change "div" element "format"
  * custom attribute to display childrens on small format. Image size switch between
  * two different sizes too. TODO: use this js file as total image manipulation 
  */

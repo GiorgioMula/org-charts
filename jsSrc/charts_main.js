@@ -3,6 +3,10 @@
  * 
  * @brief Include all methods and classes to write down an formatted org chart, using user file selection.
  * Entry point is @ref readSingleFile routine, functions referred into charts_image.js
+ * 
+ * @mainpage Main page
+ * Welcome to Org-charts main documentation page, please follow "File" menu and related content
+ * for SW design structure description
  */
 
 /**
@@ -192,7 +196,7 @@ function createHTMLEmployeeInGroup(Employee, group, useSmallFormat,
 
 /**
  * A group is simply an element to contain employees that share same manager. We
- * reserve here a <div> element to which append child "employees"
+ * reserve here a "div" element to which append child "employees"
  * 
  * @param manager
  *          reference to manager object
@@ -227,9 +231,9 @@ function toggleEmployeeSize(event)
 }
 
 /**
- * Add a new <div> level to levelNodesArray global array
+ * Add a new "div" level to levelNodesArray global array
  * 
- * @returns reference to <div> element representing an inline-block styled level
+ * @returns reference to "div" element representing an inline-block styled level
  */
 function createNewLevel(level_idx)
 {
@@ -445,12 +449,12 @@ function showDetails(event)
 }
 
 /**
- * Print debug information into #debug selector.
+ * Print debug information into "debug" id element.
  * 
  * @param text
  *          information string to write
  * @param clear
- *          true if #debug element must be cleared
+ *          true if "debug" html element content must be cleared
  */
 function writeDebug(text, clear)
 {

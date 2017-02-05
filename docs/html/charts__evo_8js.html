@@ -122,6 +122,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2ed9fe98737ce6724e7aa0073297701c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ec40a66dbbd4c2f10132aa23798ce31"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="charts__evo_8js.html#a8ec40a66dbbd4c2f10132aa23798ce31">createHTMLPersonInGroup</a> (person, group, useSmallFormat, installListener)</td></tr>
 <tr class="separator:a8ec40a66dbbd4c2f10132aa23798ce31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85c981d2c2c94b9eac9ee264554b27c3"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="charts__evo_8js.html#a85c981d2c2c94b9eac9ee264554b27c3">createHTMLGroupInLevel</a> (manager, level)</td></tr>
+<tr class="separator:a85c981d2c2c94b9eac9ee264554b27c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3358b93dc2af36f401bb95e8ef86dc44"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="charts__evo_8js.html#a3358b93dc2af36f401bb95e8ef86dc44">createNewLevel</a> ()</td></tr>
 <tr class="separator:a3358b93dc2af36f401bb95e8ef86dc44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5424ef533f005025597ce7ab238a88c"><td class="memItemLeft" align="right" valign="top">function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="charts__evo_8js.html#af5424ef533f005025597ce7ab238a88c">compilePersonMap</a> (personObj)</td></tr>
@@ -167,6 +169,40 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>{PersonMap} </dd></dl>
 
+</div>
+</div>
+<a class="anchor" id="a85c981d2c2c94b9eac9ee264554b27c3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">function createHTMLGroupInLevel </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>manager</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>level</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A group is simply an element to contain employees that share same manager. We reserve here a </p><div> element to which append child "employees"</div><div><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">manager</td><td>reference to manager object </td></tr>
+    <tr><td class="paramname">level</td><td>the level object this group belongs to </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the DOM new element appended to level </dd></dl>
+</div>
 </div>
 </div>
 <a class="anchor" id="a8ec40a66dbbd4c2f10132aa23798ce31"></a>
@@ -294,7 +330,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Person class constructor </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Person class constructor</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">aName</td><td></td></tr>
     <tr><td class="paramname">imgPath</td><td></td></tr>
@@ -336,7 +373,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>chart_evo entry point </p><dl class="params"><dt>Parameters</dt><dd>
+<p>chart_evo entry point</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td>event object from input file HTML5 selection </td></tr>
   </table>
@@ -358,7 +396,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Open a new page with employee details, installed with "onclick" event on person HTML </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Open a new page with employee details, installed with "onclick" event on person HTML</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">event</td><td></td></tr>
   </table>
@@ -396,7 +435,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Recursive function, write HTML structural code for employee object passed by parameter reference </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Recursive function, write HTML structural code for employee object passed by parameter reference</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">employee</td><td>person object to write HTML code under related level and group </td></tr>
     <tr><td class="paramname">levelIdx</td><td>the level where to append employee information. If a group already exist on same level, then just add the person, otherwise also create the group. </td></tr>
@@ -430,7 +470,8 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Print debug information into #debug selector. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Print debug information into #debug selector.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">text</td><td>information string to write </td></tr>
     <tr><td class="paramname">clear</td><td>true if #debug element must be cleared </td></tr>

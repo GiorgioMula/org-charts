@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['showdetails',['showDetails',['../charts__evo_8js.html#aa7b0d37864dfe4de4eea42e45f72c41f',1,'charts_evo.js']]]
+  ['readsinglefile',['readSingleFile',['../charts__main_8js.html#afcdc4ae4da98a9f9da70b83a34362f2b',1,'charts_main.js']]]
 ];
