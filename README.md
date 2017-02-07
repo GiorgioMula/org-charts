@@ -5,9 +5,9 @@ Can also select a middle-manager employee and just print details about his own b
 
 <h2>Some screenshots</h2>
 
-<img src="docs/Selezione.png" caption="Data and branch-manager selection" />
+<img src="docs/Selezione.png" alt="Data and branch-manager selection" />
 
-<img src="docs/Grafico.png" caption="Chart example" />
+<img src="docs/Grafico.png" alt="Chart example" />
 
 <h2>For developers</h2>
 

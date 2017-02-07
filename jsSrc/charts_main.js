@@ -158,36 +158,15 @@ function createHTMLEmployeeInGroup(Employee, group, useSmallFormat,
 	newNode.role = Employee.role;
 
 	// Create image element
-	const
-	IMG_WIDTH = 196;
-
-	var imgObject = document.createElement("img");
-	imgObject.src = "../test/" + dataPath + '/pictures/' + Employee.img;
-	imgObject.style.width = IMG_WIDTH + "px";
-	var selIndex = document.getElementById("imageRatio").selectedIndex;
-	switch (selIndex)
-	{
-		case 0: // 4:3
-			imgObject.style.borderRadius = "10%";
-			imgObject.style.height = ((IMG_WIDTH * 3) / 4) + "px";
-			break;
-		case 1: // 1:1
-			imgObject.style.borderRadius = "50%";
-			imgObject.style.height = IMG_WIDTH + "px";
-			break;
-		case 2: // 16:9
-		default:
-			imgObject.style.borderRadius = "5%";
-			imgObject.style.height = ((IMG_WIDTH * 9) / 16) + "px";
-			break;
-	}
-	// 
+	var imgObj = createImage($("#imageRatio").val(), Employee.img);
+	
+	// Create "p" element fon name and role 
 	var details = document.createElement("p");
 	details.innerHTML = '<strong>' + Employee.name + '</strong><br/><small>'
 			+ Employee.role + '</small>';
 
 	// Append image and name
-	newNode.appendChild(imgObject);
+	newNode.appendChild(imgObj);
 	newNode.appendChild(details);
 
 	// Append Employee <div> element to group parent node
