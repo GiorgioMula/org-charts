@@ -1,5 +1,6 @@
 /**
  * @file charts_image.js
+ *  
  * @brief Image manipulations functions used by main file
  * @ref charts_main.js
  */

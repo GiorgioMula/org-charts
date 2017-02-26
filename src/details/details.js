@@ -1,12 +1,30 @@
 /**
+ * @file details.js
  * 
+ * @page Details
+ * Details section used to display into a separate page more details about a single employee.
+ * Into .csv file can have any number of additional columns, each with an employee property that
+ * can be displayed into this page. Source code for this section:
+ * * @ref details.js
  */
 
-function listener(event)
-{
-	event.origin; // TODO
+var img_path;
 
-	writeDetails(event.data);
+function listener(event)
+{	
+	event.source;	// TODO: verify source from parent
+	event.origin; // TODO
+	
+	if (this.dataPathReceived)
+	{
+		var employeeObj = JSON.parse(event.data);
+		writeDetails(employeeObj);	
+	}
+	else
+	{
+		img_path = event.data;
+		this.dataPathReceived = true;	
+	}
 }
 
 if (window.addEventListener)
@@ -27,18 +45,21 @@ function writeDetails(personDetails)
 
 function createHTMLPerson(person, parent)
 {
-	var newNode = document.createElement("div");
-	var data = person.split("_");
-	newNode.setAttribute("class", "personDetails");
-	newNode.setAttribute("id", person.name);
+	var newNode = $("<div>");
+	newNode.attr("class", "personDetails");
+	newNode.attr("id", person.name);
 
-	var newContent = '<img src="../test/' + window.opener.dataPath + '/pictures/' + person.img
-			+ '" alt="' + person.name + '" />';
-	newContent += '<p>Name:     <strong>' + data[0] + '</strong><br/>';
-	newContent += 'Role:     ' + person.role + '<br/>';
-	newContent += 'Manager:  ' + person.managerName + '<br/></p>';
-
-	newNode.innerHTML = newContent;
+	var newContent = $("<img>");
+	newContent.attr("src", img_path + person.img);
+	newContent.attr("alt", person.name);
 	
+	var paragraph = $("<p>");
+	paragraph.html(
+	"Name:     <strong>" + person.name + "</strong><br/>" +
+	"Role:     " + person.role + "<br/>" +
+	"Manager:  " + person.managerName + "<br/>");
+
+	newNode.append(newContent);
+	newNode.append(paragraph);
 	parent.append(newNode);
 }

@@ -1,4 +1,14 @@
 /**
+ * @file options.js
+ * 
+ * @page Options
+ * 
+ * Used as top frame into main application page, it allow user interaction to select source .csv data,
+ * image ratio and to ask to print diagram on video or printer. For details follow file documentations at:
+ * * @ref options.js
+ */
+
+/**
  * Reference to chart frame page, must communicate user file selection using
  * postMessage
  */
@@ -31,6 +41,20 @@ else
 	attachEvent("onmessage", listener)
 }
 
+function OptionsCommand(command, manager_name, size_ratio, data_path)
+{
+	this.command = command;
+	this.manager_name = manager_name;
+	this.size_ratio = size_ratio;
+	this.data_path = data_path;
+}
+
+function ParseTextCommand(command, text_line)
+{
+	this.command = command;
+	this.text_line = text_line;
+}
+
 /**
  * chart_evo entry point
  * 
@@ -50,25 +74,30 @@ function readSingleFile(e)
 	{
 		var contents = e.target.result;
 		var textLines = contents.split("\n");
-
-		chartWindow.postMessage("START", "*");
+		var cmdObject = new ParseTextCommand("START", "");
+		chartWindow.postMessage(JSON.stringify(cmdObject), "*");
 		textLines.forEach(function(currentValue)
 		{
-			chartWindow.postMessage(currentValue, "*");
+			cmdObject.command = "DATA";
+			cmdObject.text_line = currentValue;
+			chartWindow.postMessage(JSON.stringify(cmdObject), "*");
 		});
-		chartWindow.postMessage("END", "*");
+		cmdObject.command = "END";
+		chartWindow.postMessage(JSON.stringify(cmdObject), "*");
 	};
 	reader.readAsText(file);
 }
 
 function writeDiagram()
 {
-	chartWindow.postMessage("WRITE_" + $("#rootManager option:selected").text() + "_" + $("#imageRatio option:selected").text() + "_" + dataPath, "*");
+	var options = new OptionsCommand("WRITE", $("#rootManager option:selected").val(), $("#imageRatio option:selected").val(), dataPath);
+	chartWindow.postMessage(JSON.stringify(options), "*");
 }
 
 function printDiagram()
 {
-	chartWindow.postMessage("PRINT", "*");
+	var options = new OptionsCommand("PRINT");
+	chartWindow.postMessage(JSON.stringify(options), "*");
 }
 
 // RECEPTION HANDLERS

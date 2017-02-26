@@ -2,15 +2,29 @@
  * @file charts_main.js
  * 
  * @brief Include all methods and classes to write down an formatted org chart,
- *        using user file selection. Entry point is
- * @ref readSingleFile routine, functions referred into charts_image.js
+ *        using user file selection. Entry point is @ref listener routine, 
+ *        where take place decoding of .csv data and user selections posted by messages
+ *        from @ref options page.
  * 
- * @mainpage Main page Welcome to Org-charts main documentation page, please
+ * @mainpage Main page 
+ * 	Welcome to Org-charts main documentation page, please
  *           follow "File" menu and related content for SW design structure
- *           description
+ *           description. This javascript application is composed on 3 main components, each with its own 
+ *           folder to accomodate html and javascript sources:
+ *           * @ref Charts
+ *           * @ref Details
+ *           * @ref Options
+ *           
+ * @page Charts
+ * This section render graph using data passed from @ref options section page. Source code composing this section
+ * are:
+ * * @ref charts_main.js
+ * * @ref charts_image.js
+ * * @ref charts_employee.js 
  */
 
 const CMD_START_FILE = "START";
+const CMD_DATA_FILE = "DATA";
 const CMD_END_FILE = "END";
 const CMD_WRITE_DIAGRAM = "WRITE";
 const CMD_PRINT_DIAGRAM = "PRINT";
@@ -18,34 +32,47 @@ const CMD_PRINT_DIAGRAM = "PRINT";
 var imageRatio;
 var dataPath;
 var option_window;
+
+/**
+ * Receiver for messages posted to this page. Basically receives .csv data text lines and
+ * "print" / "show diagram" user commands.
+ * @param event the message data, always a JSON object with a "command" field to decode.
+ */
 function listener(event)
 {
 	option_window = event.source;
 	event.origin; // TODO
 
-	if (event.data == CMD_END_FILE)
+	var receivedObject = JSON.parse(event.data);
+	switch (receivedObject.command)
 	{
-		// Reception compete, now prepare employee's tree
-		employeeMap = compileEmployeeMap(EmployeeBuffer);
-	}
-	else if (event.data == CMD_START_FILE)
-	{
-		this.line_number = 0;	
-	}
-	else if (event.data.includes(CMD_WRITE_DIAGRAM))
-	{
-		var data = event.data.split("_");
-		imageRatio = data[2];
-		dataPath = data[3];
-		writeDiagram(data[1]);
-	}
-	else if (event.data == CMD_PRINT_DIAGRAM)
-	{
-		window.print();
-	}
-	else
-	{
-		parseCsvLine(event.data, this.line_number++);
+		case CMD_END_FILE:
+			// Reception compete, now prepare employee's tree
+			employeeMap = compileEmployeeMap(EmployeeBuffer);
+			break;
+
+		case CMD_START_FILE:
+			this.line_number = 0;
+			break;
+
+		case CMD_DATA_FILE:
+			parseCsvLine(receivedObject.text_line, this.line_number++);
+			break;
+
+		case CMD_WRITE_DIAGRAM:
+			alert(receivedObject.manager_name);
+			imageRatio = receivedObject.size_ratio;
+			dataPath = receivedObject.data_path;
+			writeDiagram(receivedObject.manager_name);
+			break;
+
+		case CMD_PRINT_DIAGRAM:
+			window.print();
+			break;
+
+		default:
+			alert("Unknown command received: " + receivedObject.command);
+			break;
 	}
 }
 
@@ -63,6 +90,12 @@ else
  * name as property in order to quickly search using name as a key
  */
 var EmployeeBuffer = new Object();
+
+/**
+ * Employees ordered map, holds pointers to @ref EmployeeBuffer array objects
+ * into hierarchical form for recursive traversal. It implements the "composite"
+ * pattern.
+ */
 var employeeMap;
 
 /**
@@ -403,10 +436,15 @@ function showDetails(event)
 	if (EmployeeName != null)
 	{
 		var EmployeeDetails = employeeMap.getEmployee(EmployeeName);
+		var img_path = "../../test/" + dataPath + "/pictures/";
+
 		// open new window that will read opener.PersonDetails object
 		var new_win = window.open("../details/employeeDetails.html", "_blank");
-		new_win.postMessage(EmployeeDetails.name + "_" + EmployeeDetails.img + "_" + 
-				EmployeeDetails.role, "*");
+		setTimeout(function()
+		{
+			new_win.postMessage(img_path, "*");
+			new_win.postMessage(JSON.stringify(EmployeeDetails, [ 'name', 'img', 'managerName', 'role' ]), "*");
+		}, 500);
 	}
 }
 

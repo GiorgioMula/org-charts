@@ -2,6 +2,9 @@ var NAVTREE =
 [
   [ "Org Charts", "index.html", [
     [ "Main page", "index.html", null ],
+    [ "Charts", "Charts.html", null ],
+    [ "Details", "Details.html", null ],
+    [ "Options", "Options.html", null ],
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
@@ -15,7 +18,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"charts__employee_8js.html"
+"Charts.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

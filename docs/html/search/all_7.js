@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['toggledivformat',['toggleDivFormat',['../charts__image_8js.html#ad64d2ef7c8de274871f61ae58ba14e56',1,'charts_image.js']]]
+  ['showdetails',['showDetails',['../charts__main_8js.html#aa7b0d37864dfe4de4eea42e45f72c41f',1,'charts_main.js']]]
 ];

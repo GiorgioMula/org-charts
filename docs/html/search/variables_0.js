@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['datapath',['dataPath',['../charts__main_8js.html#a67d0ed5690592e164f618ac12e93e32b',1,'charts_main.js']]]
+  ['chartwindow',['chartWindow',['../options_8js.html#a5a51a4e5dfd9a349231215a84ea4d134',1,'options.js']]]
 ];
