@@ -2,25 +2,49 @@
  * @file charts_main.js
  * 
  * @brief Include all methods and classes to write down an formatted org chart,
- *        using user file selection. Entry point is @ref listener routine, 
- *        where take place decoding of .csv data and user selections posted by messages
- *        from @ref options page.
+ *        using user file selection. Entry point is
+ * @ref listener routine, where take place decoding of .csv data and user
+ *      selections posted by messages from
+ * @ref options page.
  * 
  * @mainpage Main page 
- * 	Welcome to Org-charts main documentation page, please
- *           follow "File" menu and related content for SW design structure
- *           description. This javascript application is composed on 3 main components, each with its own 
- *           folder to accomodate html and javascript sources:
- *           * @ref Charts
- *           * @ref Details
- *           * @ref Options
- *           
- * @page Charts
- * This section render graph using data passed from @ref options section page. Source code composing this section
- * are:
+ * Welcome to Org-charts main documentation page, please
+ * follow "File" menu and related content for SW design structure
+ * description. This javascript application is composed on 3 main
+ * components, each with its own folder to accomodate html and
+ * javascript sources: 
+ * * @ref Charts
+ * * @ref Details
+ * * @ref Options
+ * @startuml
+ * 
+ * [Options frame] -- [Charts frame] 
+ * package "Options frame" {
+ *   [File]
+ *   [Image size]
+ *   [Manager selection]
+ * }
+ * 
+ * package "Charts frame" {
+ *   [graph] -> [details]
+ *   [debug]
+ *   [footer] -- [debug]
+ *    [graph] -- [footer]
+ * }
+ *  
+ * legend
+ * Main frames on page with related components
+ * endlegend
+ * 
+ * @enduml
+ * 
+ * 
+ * @page Charts 
+ * This section render graph using data passed from
+ * @ref options section page. Source code composing this section are:
  * * @ref charts_main.js
  * * @ref charts_image.js
- * * @ref charts_employee.js 
+ * * @ref charts_employee.js
  */
 
 const CMD_START_FILE = "START";
@@ -29,20 +53,33 @@ const CMD_END_FILE = "END";
 const CMD_WRITE_DIAGRAM = "WRITE";
 const CMD_PRINT_DIAGRAM = "PRINT";
 
+/**
+ * DOM object element will be with some well defined classes for later
+ * management
+ */
+const GraphClassNames =
+{
+  level : "LEVEL",
+  group : "GROUP",
+  employee : "EMPLOYEE"
+};
+
 var imageRatio;
 var dataPath;
 var option_window;
 
 /**
- * Receiver for messages posted to this page. Basically receives .csv data text lines and
- * "print" / "show diagram" user commands.
- * @param event the message data, always a JSON object with a "command" field to decode.
+ * Receiver for messages posted to this page. Basically receives .csv data text
+ * lines and "print" / "show diagram" user commands.
+ * 
+ * @param event
+ *          the message data, always a JSON object with a "command" field to
+ *          decode.
  */
 function listener(event)
 {
 	option_window = event.source;
 	event.origin; // TODO
-
 	var receivedObject = JSON.parse(event.data);
 	switch (receivedObject.command)
 	{
@@ -60,7 +97,6 @@ function listener(event)
 			break;
 
 		case CMD_WRITE_DIAGRAM:
-			alert(receivedObject.manager_name);
 			imageRatio = receivedObject.size_ratio;
 			dataPath = receivedObject.data_path;
 			writeDiagram(receivedObject.manager_name);
@@ -92,9 +128,10 @@ else
 var EmployeeBuffer = new Object();
 
 /**
- * Employees ordered map, holds pointers to @ref EmployeeBuffer array objects
- * into hierarchical form for recursive traversal. It implements the "composite"
- * pattern.
+ * Employees ordered map, holds pointers to
+ * 
+ * @ref EmployeeBuffer array objects into hierarchical form for recursive
+ *      traversal. It implements the "composite" pattern.
  */
 var employeeMap;
 
@@ -110,18 +147,12 @@ var employeeMap;
  */
 function parseCsvLine(textLine, index)
 {
-	const
-	LastName = "COGNOME";
-	const
-	FirstName = "NOME";
-	const
-	Role = "funzione";
-	const
-	Manager = "riporto superiore";
-	const
-	Location = "sede";
-	const
-	Type = "tipo contratto";
+	const LastName = "COGNOME";
+	const FirstName = "NOME";
+	const Role = "funzione";
+	const Manager = "riporto superiore";
+	const Location = "sede";
+	const Type = "tipo contratto";
 
 	// Remove comments or empty lines
 	if (textLine.length == 0 || textLine[0] == '#' || textLine[0] == '\n' || textLine[0] == '\r')
@@ -210,18 +241,18 @@ function toCamelCase(inputString)
 function createHTMLEmployeeInGroup(Employee, group, useSmallFormat, installListener)
 {
 	// create Employee node, parent <di> for image and details elements
-	var newNode = document.createElement("div");
+	var newEmployee = document.createElement("div");
 	if (installListener)
 	{
-		newNode.addEventListener("click", showDetails);
+		newEmployee.addEventListener("click", showDetails);
 	}
-	newNode.setAttribute("class", "Employee");
+	newEmployee.setAttribute("class", GraphClassNames.employee);
 	if (useSmallFormat)
 	{
-		newNode.format = "small";
+		newEmployee.format = "small";
 	}
-	newNode.id = Employee.name;
-	newNode.role = Employee.role;
+	newEmployee.id = Employee.name;
+	newEmployee.role = Employee.role;
 
 	// Create image element
 	var imgObj = createImage(imageRatio, Employee.img);
@@ -231,11 +262,11 @@ function createHTMLEmployeeInGroup(Employee, group, useSmallFormat, installListe
 	details.innerHTML = '<strong>' + Employee.name + '</strong><br/><small>' + Employee.role + '</small>';
 
 	// Append image and name
-	newNode.appendChild(imgObj);
-	newNode.appendChild(details);
+	newEmployee.appendChild(imgObj);
+	newEmployee.appendChild(details);
 
 	// Append Employee <div> element to group parent node
-	group.appendChild(newNode);
+	group.appendChild(newEmployee);
 }
 
 /**
@@ -250,39 +281,52 @@ function createHTMLEmployeeInGroup(Employee, group, useSmallFormat, installListe
  */
 function createHTMLGroupInLevel(manager, level)
 {
-	var newNode = document.createElement("div");
-	newNode.setAttribute("class", "group");
-	newNode.style.display = "inline-block";
-	newNode.style.position = "relative";
+	var newGroup = document.createElement("div");
+	newGroup.setAttribute("class", GraphClassNames.group);
+	newGroup.style.display = "inline-block";
+	newGroup.style.position = "relative";
 
 	var owner = manager == null ? "CEO" : manager.name;
-	newNode.setAttribute("owner", owner);
+	newGroup.setAttribute("owner", owner);
 	var newContent = '<input type="button" onclick="toggleEmployeeSize(event)" style="position: absolute; top: 5px; right: 20px"></input>';
 	if (manager != null)
 	{
 		newContent += '<a href="#' + manager.name + '">manager: ' + manager.name + '</a>';
 	}
-	newNode.innerHTML = newContent;
-	level.appendChild(newNode);
-	return newNode;
+	newGroup.innerHTML = newContent;
+	// Append new group before canvas (that one must be the last element on div)
+	var canvas = level.lastChild;
+	level.insertBefore(newGroup, canvas);
+	return newGroup;
 }
 
 function toggleEmployeeSize(event)
 {
 	var group = $(event.target).parent();
 	group.children("div").each(toggleDivFormat);
+	writeCanvas();
 }
 
 /**
  * Add a new "div" level to levelNodesArray global array
  * 
- * @returns reference to "div" element representing an inline-block styled level
+ * @param [in]
+ *          level_idx level depth
+ * @returns reference to "div" DOM object representing an inline-block styled
+ *          level
  */
 function createNewLevel(level_idx)
 {
 	var newLevel = document.createElement("div");
-	newLevel.setAttribute("class", "level");
+	newLevel.setAttribute("class", GraphClassNames.level);
 	newLevel.setAttribute("id", "level_" + level_idx);
+	var canvas = document.createElement("canvas");
+	canvas.setAttribute("id", "canvas_" + level_idx);
+	canvas.setAttribute("width", "400px"); // TODO
+	canvas.setAttribute("height", "100px");
+	canvas.style.display = "block";
+	newLevel.appendChild(canvas);
+
 	document.getElementById("org-chart").appendChild(newLevel);
 	return newLevel;
 }
@@ -335,7 +379,7 @@ function compileEmployeeMap(EmployeeObj)
 				Employees += property;
 			}
 			alert("root Employee not found in diagram, still " + Object.keys(EmployeeObj).length + " Employees to assign: "
-					+ Employees);
+			    + Employees);
 			return null;
 		}
 	}
@@ -357,17 +401,27 @@ function writeDiagram(managerNameSelection)
 	// class objects: largest level force page width in pixels (TODO: remove magic
 	// numbers)
 	var largestLevelNumEmployees = 0;
-	chart.find(".level").each(function()
+	chart.find("." + GraphClassNames.level).each(function()
 	{
-		var numEmployees = $(this).find(".Employee").length;
+		var numEmployees = $(this).find("." + GraphClassNames.employee).length;
 		if (numEmployees > largestLevelNumEmployees)
 		{
 			largestLevelNumEmployees = numEmployees;
 		}
 	});
-	newWidth = 50 + (largestLevelNumEmployees * (chart.find(".Employee").first().outerWidth(true)));
+	newWidth = 50 + (largestLevelNumEmployees * (chart.find("." + GraphClassNames.employee).first().outerWidth(true)));
 
+	// set chart min-width
 	chart.css("min-width", newWidth + "px");
+
+	// foreach level, set canvas below
+	$("canvas").each(function()
+	{
+		$(this).attr("width", newWidth + "px");
+	});
+	// remove last canvas on last level (no child groups to connect for sure)
+	$("." + GraphClassNames.level).last().children().last().remove();
+	writeCanvas();
 }
 
 /**
@@ -386,8 +440,8 @@ function writeDiagram(managerNameSelection)
  */
 function writeBranch(employee, levelIdx, useSmallFormat)
 {
-	const
-	Employee_PACK_LIMIT = 6; // !< Over this limit, the group is shown vertically
+	const Employee_PACK_LIMIT = 6; // !< Over this limit, the group is shown
+	// vertically
 	// var level = levelNodesArray[levelIdx];
 	var level = document.getElementById("level_" + levelIdx);
 	if (level == null)
@@ -399,7 +453,7 @@ function writeBranch(employee, levelIdx, useSmallFormat)
 	var group = null;
 	if (employee.manager != null)
 	{
-		group = $(level).find("[owner=" + employee.manager.name + "]").get(0);
+		group = $(level).find('[owner="' + employee.manager.name + '"]').get(0);
 	}
 	if (group == null)
 	{
@@ -449,6 +503,45 @@ function showDetails(event)
 }
 
 /**
+ * Write connection lines between manager and reporting group.
+ * Foreach level, the last item is the canvas which contains line connections.
+ * Each group has a "owner" attribute with manager name, while each employee has
+ * its person name has "id", thus is very straightforward to get related DOM elements
+ * and connect coordinates
+ */
+function writeCanvas()
+{
+	var canvas;
+	$("." + GraphClassNames.level).each(function()
+	{
+		// foreach level
+		writeDebug("Level " + $(this).attr("id"));
+		$(this).children("." + GraphClassNames.group).each(function()
+		{
+			// foreach group
+			writeDebug("Processing Group");
+			var manager = $(this).attr("owner");
+			if (manager != undefined && canvas != undefined)
+			{
+				writeDebug("Processing Group with manager " + manager);
+				// Get DOM element
+
+				var ctx = canvas.get(0).getContext("2d");
+				ctx.clearRect(0, 0, canvas.width(), canvas.height());
+				ctx.lineWidth = 5;
+				ctx.lineCap = "round";
+				ctx.strokeStyle = "red";
+				ctx.beginPath();
+				ctx.moveTo($(this).position().left + $(this).width() / 2, canvas.height());
+				ctx.lineTo($("#" + manager).parent().position().left + $("#" + manager).width() / 2, 0);
+				ctx.stroke();
+			}
+		});
+		canvas = $(this).children().last();
+	});
+}
+
+/**
  * Print debug information into "debug" id element.
  * 
  * @param text
@@ -458,8 +551,14 @@ function showDetails(event)
  */
 function writeDebug(text, clear)
 {
-	/*
-	 * var dbgElement = document.getElementById("debug"); if (clear) {
-	 * dbgElement.innerHTML = ""; } dbgElement.innerHTML += text + '<br/>';
-	 */
+	var debug_obj = $("#debug");
+	if (clear)
+	{
+		debug_obj.html(text + "<br/>");
+	}
+	else
+	{
+		debug_obj.append(text + "<br/>");
+	}
 }
+
