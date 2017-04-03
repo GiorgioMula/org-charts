@@ -8,6 +8,8 @@ var charts__main_8js =
     [ "parseCsvLine", "charts__main_8js.html#a2ed9fe98737ce6724e7aa0073297701c", null ],
     [ "showDetails", "charts__main_8js.html#aa7b0d37864dfe4de4eea42e45f72c41f", null ],
     [ "writeBranch", "charts__main_8js.html#a3eca7663901e28edfa91e8fd49c5c2f4", null ],
+    [ "writeCanvas", "charts__main_8js.html#a9f42509aa737e43367c21040bae5c336", null ],
     [ "writeDebug", "charts__main_8js.html#a2f6a26090b09ae4455615c95f4de9334", null ],
-    [ "employeeMap", "charts__main_8js.html#adb223e6083d0ee6d30a6b0b654ac79d1", null ]
+    [ "employeeMap", "charts__main_8js.html#adb223e6083d0ee6d30a6b0b654ac79d1", null ],
+    [ "GraphClassNames", "charts__main_8js.html#a55f76d97d43c4e243cb424cc1ee7e3ad", null ]
 ];

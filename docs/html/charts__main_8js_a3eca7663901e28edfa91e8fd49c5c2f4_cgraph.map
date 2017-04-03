@@ -1,9 +1,11 @@
 <map id="writeBranch" name="writeBranch">
 <area shape="rect" id="node2" href="$charts__main_8js.html#a630302bd34d210c6dd964e6ebf0f2865" title="createNewLevel" alt="" coords="185,5,301,32"/>
 <area shape="rect" id="node3" href="$charts__main_8js.html#a85c981d2c2c94b9eac9ee264554b27c3" title="createHTMLGroupInLevel" alt="" coords="158,56,329,83"/>
-<area shape="rect" id="node5" href="$charts__main_8js.html#af1187f2de3475d242b54da88bc846519" title="createHTMLEmployeeInGroup" alt="" coords="144,132,343,159"/>
-<area shape="rect" id="node4" href="$charts__image_8js.html#ad64d2ef7c8de274871f61ae58ba14e56" title="toggleDivFormat" alt="" coords="391,43,509,69"/>
-<area shape="rect" id="node6" href="$charts__main_8js.html#aa7b0d37864dfe4de4eea42e45f72c41f" title="showDetails" alt="" coords="403,93,497,120"/>
-<area shape="rect" id="node7" href="$charts__employee_8js.html#a3847054f5cb6cc38fc0dcddc75252878" title="Employee" alt="" coords="410,144,490,171"/>
-<area shape="rect" id="node8" href="$charts__image_8js.html#a717a46d0516a4c35c5ce27979a07b669" title="createImage" alt="" coords="403,195,497,221"/>
+<area shape="rect" id="node7" href="$charts__main_8js.html#af1187f2de3475d242b54da88bc846519" title="createHTMLEmployeeInGroup" alt="" coords="144,132,343,159"/>
+<area shape="rect" id="node4" href="$charts__image_8js.html#ad64d2ef7c8de274871f61ae58ba14e56" title="toggleDivFormat" alt="" coords="391,5,509,32"/>
+<area shape="rect" id="node5" href="$charts__main_8js.html#a9f42509aa737e43367c21040bae5c336" title="writeCanvas" alt="" coords="403,56,497,83"/>
+<area shape="rect" id="node6" href="$charts__main_8js.html#a2f6a26090b09ae4455615c95f4de9334" title="writeDebug" alt="" coords="557,56,645,83"/>
+<area shape="rect" id="node8" href="$charts__main_8js.html#aa7b0d37864dfe4de4eea42e45f72c41f" title="showDetails" alt="" coords="403,107,497,133"/>
+<area shape="rect" id="node9" href="$charts__employee_8js.html#a3847054f5cb6cc38fc0dcddc75252878" title="Employee" alt="" coords="410,157,490,184"/>
+<area shape="rect" id="node10" href="$charts__image_8js.html#a717a46d0516a4c35c5ce27979a07b669" title="createImage" alt="" coords="403,208,497,235"/>
 </map>

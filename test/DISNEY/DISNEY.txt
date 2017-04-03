@@ -1,6 +1,6 @@
 COGNOME;NOME;funzione;reparto;riporto superiore;
 PAPERONE;;Manager;;CEO;
-NONNA;Papera;Secretary;;PAPERONE;
+#NONNA;Papera;Secretary;;PAPERONE;
 PIPPO;;Architect;;PAPERONE;
 PLUTO;;Architect;;PAPERONE;
 PAPERINO;;Developer;;PIPPO;

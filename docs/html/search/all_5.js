@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['options_2ejs',['options.js',['../options_8js.html',1,'']]]
+  ['main_20page',['Main page',['../index.html',1,'']]]
 ];
